@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ClearIcon from '@material-ui/icons/Clear';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { getUiOptions } from '@rjsf/utils';
@@ -30,7 +31,7 @@ interface SubmitButtonTemplateProps extends React.ComponentProps<typeof Button> 
   };
 }
 
-function IconButtonTemplate({ icon, title, ...props }: IconButtonTemplateProps) {
+export function IconButtonTemplate({ icon, title, ...props }: IconButtonTemplateProps) {
   const button = (
     <IconButton aria-label={title} {...props}>
       {icon}
@@ -44,7 +45,7 @@ function IconButtonTemplate({ icon, title, ...props }: IconButtonTemplateProps) 
   return button;
 }
 
-function SubmitButton({ uiSchema, ...props }: SubmitButtonTemplateProps) {
+export function SubmitButton({ uiSchema, ...props }: SubmitButtonTemplateProps) {
   const buttonOptions = uiSchema?.['ui:submitButtonOptions'];
 
   if (buttonOptions?.norender) {
@@ -64,7 +65,7 @@ function SubmitButton({ uiSchema, ...props }: SubmitButtonTemplateProps) {
   );
 }
 
-function AddButton({ icon, title, uiSchema, children, ...props }: AddButtonProps) {
+export function AddButton({ icon, title, uiSchema, children, ...props }: AddButtonProps) {
   const uiOptions = getUiOptions(uiSchema);
   const addButtonProps = uiOptions.addButtonProps ?? {};
   const resolvedIcon = icon ?? <AddIcon />;
@@ -82,20 +83,24 @@ function AddButton({ icon, title, uiSchema, children, ...props }: AddButtonProps
   );
 }
 
-function CopyButton(props: IconButtonTemplateProps) {
+export function CopyButton(props: IconButtonTemplateProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <FileCopyIcon />} />;
 }
 
-function MoveDownButton(props: IconButtonTemplateProps) {
+export function MoveDownButton(props: IconButtonTemplateProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <ArrowDownwardIcon />} />;
 }
 
-function MoveUpButton(props: IconButtonTemplateProps) {
+export function MoveUpButton(props: IconButtonTemplateProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <ArrowUpwardIcon />} />;
 }
 
-function RemoveButton(props: IconButtonTemplateProps) {
+export function RemoveButton(props: IconButtonTemplateProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <RemoveIcon />} />;
+}
+
+export function ClearButton(props: IconButtonTemplateProps) {
+  return <IconButtonTemplate {...props} icon={props.icon ?? <ClearIcon />} />;
 }
 
 const ButtonTemplates = {
@@ -105,6 +110,7 @@ const ButtonTemplates = {
   MoveUpButton,
   RemoveButton,
   SubmitButton,
+  ClearButton,
 };
 
 export default ButtonTemplates;
