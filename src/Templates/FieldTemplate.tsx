@@ -1,8 +1,8 @@
 import React from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import Typography from '@material-ui/core/Typography';
-import { FieldTemplateProps } from '@rjsf/utils';
+import FormLabel from '@material-ui/core/FormLabel';
+import { FieldTemplateProps, getUiOptions } from '@rjsf/utils';
 
 export default function FieldTemplate(props: FieldTemplateProps) {
   const {
@@ -16,23 +16,28 @@ export default function FieldTemplate(props: FieldTemplateProps) {
     children,
     displayLabel,
     rawErrors,
+    uiSchema,
   } = props;
 
   const showError = rawErrors && rawErrors.length > 0;
+  const uiOptions = getUiOptions(uiSchema);
+  const hideError = uiOptions.hideError === true;
+  const showLabel = displayLabel && label && uiOptions.label !== false;
 
   return (
-    <FormControl fullWidth className={classNames} error={showError} id={id}>
-      {displayLabel && label && (
-        <Typography variant="subtitle1" component="label">
+    <FormControl fullWidth className={classNames} error={showError && !hideError} id={id}>
+      {showLabel && (
+        <FormLabel htmlFor={id} required={required}>
           {label}
-          {required ? ' *' : null}
-        </Typography>
+        </FormLabel>
       )}
       {description}
       {children}
-      {errors}
+      {!hideError && errors}
       {help}
-      {!errors && showError && <FormHelperText>{rawErrors?.join(', ')}</FormHelperText>}
+      {!hideError && !errors && showError && (
+        <FormHelperText>{rawErrors?.join(', ')}</FormHelperText>
+      )}
     </FormControl>
   );
 }

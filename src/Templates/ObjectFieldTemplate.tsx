@@ -1,22 +1,48 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { ObjectFieldTemplateProps } from '@rjsf/utils';
+import { ObjectFieldTemplateProps, getUiOptions } from '@rjsf/utils';
 
 export default function ObjectFieldTemplate(props: ObjectFieldTemplateProps) {
-  const { title, description, properties } = props;
+  const {
+    title,
+    description,
+    properties,
+    uiSchema,
+    registry,
+    idSchema,
+    required,
+    schema,
+  } = props;
+  const uiOptions = getUiOptions(uiSchema);
+  const TitleFieldTemplate = registry.templates.TitleFieldTemplate;
+  const DescriptionFieldTemplate = registry.templates.DescriptionFieldTemplate;
+  const displayLabel = uiOptions.label !== false;
 
   return (
     <Paper elevation={0} style={{ padding: 8 }}>
       <Grid container spacing={2}>
-        {title && (
+        {displayLabel && title && (
           <Grid item xs={12}>
-            <strong>{title}</strong>
+            <TitleFieldTemplate
+              id={idSchema.$id}
+              title={title}
+              required={required}
+              schema={schema}
+              uiSchema={uiSchema}
+              registry={registry}
+            />
           </Grid>
         )}
         {description && (
           <Grid item xs={12}>
-            {description}
+            <DescriptionFieldTemplate
+              id={`${idSchema.$id}__description`}
+              description={description}
+              schema={schema}
+              uiSchema={uiSchema}
+              registry={registry}
+            />
           </Grid>
         )}
         {properties.map((element) => (

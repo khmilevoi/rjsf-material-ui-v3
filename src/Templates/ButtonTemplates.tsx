@@ -7,10 +7,17 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import RemoveIcon from '@material-ui/icons/Remove';
+import { getUiOptions } from '@rjsf/utils';
 
 interface IconButtonTemplateProps extends React.ComponentProps<typeof IconButton> {
   icon?: React.ReactNode;
   title?: string;
+}
+
+interface AddButtonProps extends React.ComponentProps<typeof Button> {
+  icon?: React.ReactNode;
+  title?: string;
+  uiSchema?: Record<string, unknown>;
 }
 
 interface SubmitButtonTemplateProps extends React.ComponentProps<typeof Button> {
@@ -25,7 +32,7 @@ interface SubmitButtonTemplateProps extends React.ComponentProps<typeof Button> 
 
 function IconButtonTemplate({ icon, title, ...props }: IconButtonTemplateProps) {
   const button = (
-    <IconButton {...props}>
+    <IconButton aria-label={title} {...props}>
       {icon}
     </IconButton>
   );
@@ -57,8 +64,21 @@ function SubmitButton({ uiSchema, ...props }: SubmitButtonTemplateProps) {
   );
 }
 
-function AddButton(props: IconButtonTemplateProps) {
-  return <IconButtonTemplate {...props} icon={props.icon ?? <AddIcon />} />;
+function AddButton({ icon, title, uiSchema, children, ...props }: AddButtonProps) {
+  const uiOptions = getUiOptions(uiSchema);
+  const addButtonProps = uiOptions.addButtonProps ?? {};
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      aria-label={title}
+      startIcon={icon ?? <AddIcon />}
+      {...addButtonProps}
+      {...props}
+    >
+      {children}
+    </Button>
+  );
 }
 
 function CopyButton(props: IconButtonTemplateProps) {

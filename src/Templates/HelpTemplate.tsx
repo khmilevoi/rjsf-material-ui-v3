@@ -2,10 +2,10 @@ import React from 'react';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { HelpProps } from '@rjsf/utils';
 
-export default function HelpTemplate({ help }: HelpProps) {
+export default function HelpTemplate({ help, id }: HelpProps) {
   if (!help) {
     return null;
   }
 
-  return <FormHelperText>{help}</FormHelperText>;
+  return <FormHelperText id={id}>{help}</FormHelperText>;
 }
