@@ -1,37 +1,26 @@
+import { FormContextType, RegistryWidgetsType, RJSFSchema, StrictRJSFSchema } from '@rjsf/utils';
 import CheckboxWidget from './CheckboxWidget';
 import CheckboxesWidget from './CheckboxesWidget';
-import ColorWidget from './ColorWidget';
-import DateTimeWidget from './DateTimeWidget';
-import DateWidget from './DateWidget';
-import EmailWidget from './EmailWidget';
-import PasswordWidget from './PasswordWidget';
 import RadioWidget from './RadioWidget';
 import RangeWidget from './RangeWidget';
 import SelectWidget from './SelectWidget';
-import TextWidget from './TextWidget';
 import TextareaWidget from './TextareaWidget';
-import UpDownWidget from './UpDownWidget';
-import URLWidget from './URLWidget';
-import AltDateWidget from './AltDateWidget';
-import AltDateTimeWidget from './AltDateTimeWidget';
 
-export const Widgets = {
-  CheckboxWidget,
-  CheckboxesWidget,
-  ColorWidget,
-  DateTimeWidget,
-  DateWidget,
-  EmailWidget,
-  PasswordWidget,
-  RadioWidget,
-  RangeWidget,
-  SelectWidget,
-  TextWidget,
-  TextareaWidget,
-  UpDownWidget,
-  URLWidget,
-  AltDateWidget,
-  AltDateTimeWidget,
-};
+export function generateWidgets<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any
+>(): RegistryWidgetsType<T, S, F> {
+  return {
+    CheckboxWidget,
+    CheckboxesWidget,
+    RadioWidget,
+    RangeWidget,
+    SelectWidget,
+    TextareaWidget,
+  } as RegistryWidgetsType<T, S, F>;
+}
 
-export default Widgets;
+export const Widgets = generateWidgets();
+
+export default generateWidgets();
