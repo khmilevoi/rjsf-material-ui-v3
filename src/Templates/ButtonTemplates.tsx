@@ -8,32 +8,25 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ClearIcon from '@material-ui/icons/Clear';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import RemoveIcon from '@material-ui/icons/Remove';
-import { getUiOptions } from '@rjsf/utils';
+import { getUiOptions, IconButtonProps, SubmitButtonProps } from '@rjsf/utils';
 
-interface IconButtonTemplateProps extends React.ComponentProps<typeof IconButton> {
+type IconButtonTemplateProps = React.PropsWithChildren<IconButtonProps> & {
   icon?: React.ReactNode;
-  title?: string;
-}
+};
 
-interface AddButtonProps extends React.ComponentProps<typeof Button> {
-  icon?: React.ReactNode;
-  title?: string;
-  uiSchema?: Record<string, unknown>;
-}
-
-interface SubmitButtonTemplateProps extends React.ComponentProps<typeof Button> {
-  uiSchema?: {
-    'ui:submitButtonOptions'?: {
-      props?: React.ComponentProps<typeof Button>;
-      submitText?: string;
-      norender?: boolean;
-    };
-  };
-}
-
-export function IconButtonTemplate({ icon, title, ...props }: IconButtonTemplateProps) {
+export function IconButtonTemplate({
+  icon,
+  iconType,
+  uiSchema,
+  registry,
+  ...props
+}: IconButtonTemplateProps) {
+  const { title, ...iconButtonProps } = props;
   const button = (
-    <IconButton aria-label={title} {...props}>
+    <IconButton
+      aria-label={title}
+      {...(iconButtonProps as React.ComponentProps<typeof IconButton>)}
+    >
       {icon}
     </IconButton>
   );
@@ -45,7 +38,7 @@ export function IconButtonTemplate({ icon, title, ...props }: IconButtonTemplate
   return button;
 }
 
-export function SubmitButton({ uiSchema, ...props }: SubmitButtonTemplateProps) {
+export function SubmitButton({ uiSchema }: SubmitButtonProps) {
   const buttonOptions = uiSchema?.['ui:submitButtonOptions'];
 
   if (buttonOptions?.norender) {
@@ -57,25 +50,32 @@ export function SubmitButton({ uiSchema, ...props }: SubmitButtonTemplateProps) 
       type="submit"
       variant="contained"
       color="primary"
-      {...buttonOptions?.props}
-      {...props}
+      {...(buttonOptions?.props as React.ComponentProps<typeof Button>)}
     >
       {buttonOptions?.submitText ?? 'Submit'}
     </Button>
   );
 }
 
-export function AddButton({ icon, title, uiSchema, children, ...props }: AddButtonProps) {
+export function AddButton({
+  icon,
+  iconType,
+  uiSchema,
+  registry,
+  children,
+  ...props
+}: IconButtonTemplateProps) {
   const uiOptions = getUiOptions(uiSchema);
-  const addButtonProps = uiOptions.addButtonProps ?? {};
+  const addButtonProps = (uiOptions.addButtonProps ?? {}) as React.ComponentProps<typeof Button>;
   const resolvedIcon = icon ?? <AddIcon />;
+  const { title, ...buttonProps } = props;
   return (
     <Button
       variant="contained"
       color="primary"
       aria-label={title}
       {...addButtonProps}
-      {...props}
+      {...(buttonProps as React.ComponentProps<typeof Button>)}
     >
       {resolvedIcon && <span style={{ display: 'inherit', marginRight: 8 }}>{resolvedIcon}</span>}
       {children}
@@ -83,23 +83,23 @@ export function AddButton({ icon, title, uiSchema, children, ...props }: AddButt
   );
 }
 
-export function CopyButton(props: IconButtonTemplateProps) {
+export function CopyButton(props: IconButtonProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <FileCopyIcon />} />;
 }
 
-export function MoveDownButton(props: IconButtonTemplateProps) {
+export function MoveDownButton(props: IconButtonProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <ArrowDownwardIcon />} />;
 }
 
-export function MoveUpButton(props: IconButtonTemplateProps) {
+export function MoveUpButton(props: IconButtonProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <ArrowUpwardIcon />} />;
 }
 
-export function RemoveButton(props: IconButtonTemplateProps) {
+export function RemoveButton(props: IconButtonProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <RemoveIcon />} />;
 }
 
-export function ClearButton(props: IconButtonTemplateProps) {
+export function ClearButton(props: IconButtonProps) {
   return <IconButtonTemplate {...props} icon={props.icon ?? <ClearIcon />} />;
 }
 

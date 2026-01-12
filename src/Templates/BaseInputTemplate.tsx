@@ -23,7 +23,18 @@ export default function BaseInputTemplate(props: BaseInputTemplateProps) {
     ariaDescribedByIds,
   } = props;
 
-  const uiOptions = { ...getUiOptions(uiSchema), ...options };
+  const uiOptions = {
+    ...(getUiOptions(uiSchema) as Record<string, unknown>),
+    ...(options as Record<string, unknown>),
+  } as {
+    emptyValue?: unknown;
+    inputType?: string;
+    inputProps?: Record<string, unknown>;
+    InputProps?: React.ComponentProps<typeof TextField>['InputProps'];
+    autocomplete?: string;
+    multiline?: boolean;
+    rows?: number;
+  };
   const showError = rawErrors && rawErrors.length > 0;
   const helperText = showError ? rawErrors?.join(', ') : undefined;
   const emptyValue = uiOptions.emptyValue ?? schema.default ?? '';
@@ -31,7 +42,7 @@ export default function BaseInputTemplate(props: BaseInputTemplateProps) {
   const examples = Array.isArray(schema.examples) ? schema.examples : undefined;
   const listId = examples && examples.length > 0 ? `${id}-examples` : undefined;
   const inputProps = {
-    ...uiOptions.inputProps,
+    ...(uiOptions.inputProps ?? {}),
     'aria-describedby': ariaDescribedByIds,
     'aria-invalid': showError || undefined,
     list: listId,
@@ -52,7 +63,7 @@ export default function BaseInputTemplate(props: BaseInputTemplateProps) {
         value={value ?? ''}
         error={showError}
         helperText={helperText}
-        InputProps={{ readOnly: readonly, ...uiOptions.InputProps }}
+        InputProps={{ readOnly: readonly, ...(uiOptions.InputProps ?? {}) }}
         inputProps={inputProps}
         InputLabelProps={{ shrink: inputType === 'date' || inputType === 'datetime-local' }}
         multiline={uiOptions.multiline}
@@ -65,7 +76,7 @@ export default function BaseInputTemplate(props: BaseInputTemplateProps) {
       />
       {listId && (
         <datalist id={listId}>
-          {examples?.map((example, index) => (
+          {examples?.map((example: unknown, index: number) => (
             <option key={String(example) + index} value={String(example)} />
           ))}
         </datalist>

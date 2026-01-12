@@ -21,7 +21,7 @@ export default function ObjectFieldTemplate(props: ObjectFieldTemplateProps) {
 
   return (
     <Paper elevation={0} style={{ padding: 8 }}>
-      <Grid container spacing={2}>
+      <Grid container spacing={16}>
         {displayLabel && title && (
           <Grid item xs={12}>
             <TitleFieldTemplate

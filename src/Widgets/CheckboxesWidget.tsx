@@ -22,8 +22,8 @@ export default function CheckboxesWidget(props: WidgetProps) {
   };
 
   return (
-    <FormControl component="fieldset" error={showError} disabled={disabled || readonly} id={id}>
-      {label && <FormLabel component="legend">{label}</FormLabel>}
+    <FormControl error={showError} disabled={disabled || readonly} id={id}>
+      {label && <FormLabel>{label}</FormLabel>}
       <FormGroup>
         {enumOptions.map((option) => (
           <FormControlLabel
@@ -32,7 +32,7 @@ export default function CheckboxesWidget(props: WidgetProps) {
               <Checkbox
                 checked={selectedValues.includes(option.value)}
                 onChange={handleToggle(option.value)}
-                value={option.value as string}
+                value={String(option.value)}
                 disabled={enumDisabled.includes(option.value)}
               />
             }

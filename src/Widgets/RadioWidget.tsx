@@ -14,13 +14,13 @@ export default function RadioWidget(props: WidgetProps) {
   const selectedIndex = enumOptionsIndexForValue(value, enumOptions) ?? -1;
 
   return (
-    <FormControl component="fieldset" required={required} error={showError} disabled={disabled || readonly}>
-      <FormLabel component="legend">{label}</FormLabel>
+    <FormControl required={required} error={showError} disabled={disabled || readonly}>
+      <FormLabel>{label}</FormLabel>
       <RadioGroup
         id={id}
-        value={selectedIndex}
+        value={String(selectedIndex)}
         onChange={(event) => {
-          const index = Number(event.target.value);
+          const index = Number((event.target as HTMLInputElement).value);
           const next = enumOptions && enumOptions[index] ? enumOptions[index].value : emptyValue;
           onChange(next);
         }}
@@ -28,7 +28,7 @@ export default function RadioWidget(props: WidgetProps) {
         {enumOptions?.map((option, index) => (
           <FormControlLabel
             key={option.value as string}
-            value={index}
+            value={String(index)}
             control={<Radio />}
             label={option.label}
             disabled={enumDisabled?.includes(option.value)}
