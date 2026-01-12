@@ -1,5 +1,6 @@
 import ArrayFieldTemplate from './ArrayFieldTemplate';
 import BaseInputTemplate from './BaseInputTemplate';
+import ButtonTemplates from './ButtonTemplates';
 import DescriptionFieldTemplate from './DescriptionFieldTemplate';
 import ErrorListTemplate from './ErrorListTemplate';
 import FieldTemplate from './FieldTemplate';
@@ -11,6 +12,7 @@ import WrapIfAdditionalTemplate from './WrapIfAdditionalTemplate';
 export const Templates = {
   ArrayFieldTemplate,
   BaseInputTemplate,
+  ButtonTemplates,
   DescriptionFieldTemplate,
   ErrorListTemplate,
   FieldTemplate,
