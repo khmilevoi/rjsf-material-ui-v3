@@ -1,0 +1,23 @@
+import ArrayFieldTemplate from './ArrayFieldTemplate';
+import BaseInputTemplate from './BaseInputTemplate';
+import DescriptionFieldTemplate from './DescriptionFieldTemplate';
+import ErrorListTemplate from './ErrorListTemplate';
+import FieldTemplate from './FieldTemplate';
+import HelpTemplate from './HelpTemplate';
+import ObjectFieldTemplate from './ObjectFieldTemplate';
+import TitleFieldTemplate from './TitleFieldTemplate';
+import WrapIfAdditionalTemplate from './WrapIfAdditionalTemplate';
+
+export const Templates = {
+  ArrayFieldTemplate,
+  BaseInputTemplate,
+  DescriptionFieldTemplate,
+  ErrorListTemplate,
+  FieldTemplate,
+  HelpTemplate,
+  ObjectFieldTemplate,
+  TitleFieldTemplate,
+  WrapIfAdditionalTemplate,
+};
+
+export default Templates;

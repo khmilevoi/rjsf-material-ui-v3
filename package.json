@@ -1,0 +1,26 @@
+{
+  "name": "rjsf-material-ui-v3",
+  "version": "0.1.0",
+  "description": "Material-UI v3 theme components for react-jsonschema-form",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@material-ui/core": "^3.0.0",
+    "@material-ui/icons": "^3.0.0",
+    "@rjsf/core": "^5.0.0",
+    "@rjsf/utils": "^5.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
