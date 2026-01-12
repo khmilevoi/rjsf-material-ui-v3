@@ -18,10 +18,19 @@ export default function SelectWidget(props: WidgetProps) {
     placeholder,
     rawErrors,
     options,
+    multiple,
   } = props;
 
-  const { enumOptions, enumDisabled } = options;
+  const { enumOptions, enumDisabled, emptyValue } = options;
+  const isMultiple = Boolean(multiple);
   const showError = rawErrors && rawErrors.length > 0;
+  const selectedIndexes = isMultiple
+    ? Array.isArray(value)
+      ? value
+          .map((optionValue) => enumOptionsIndexForValue(optionValue, enumOptions))
+          .filter((index): index is number => index !== undefined && index >= 0)
+      : []
+    : enumOptionsIndexForValue(value, enumOptions) ?? '';
 
   return (
     <FormControl fullWidth error={showError} disabled={disabled || readonly}>
@@ -31,15 +40,30 @@ export default function SelectWidget(props: WidgetProps) {
       <Select
         labelId={`${id}-label`}
         id={id}
-        value={enumOptionsIndexForValue(value, enumOptions) ?? ''}
+        value={selectedIndexes}
         onChange={(event) => {
-          const index = event.target.value as number;
-          const next = enumOptions && enumOptions[index] ? enumOptions[index].value : undefined;
+          if (isMultiple) {
+            const indexes = Array.isArray(event.target.value) ? event.target.value : [];
+            const next = indexes
+              .map((index) => (enumOptions && enumOptions[index] ? enumOptions[index].value : undefined))
+              .filter((optionValue) => optionValue !== undefined);
+            onChange(next);
+            return;
+          }
+
+          const index = event.target.value as number | '';
+          if (index === '') {
+            onChange(emptyValue ?? '');
+            return;
+          }
+
+          const next = enumOptions && enumOptions[index] ? enumOptions[index].value : emptyValue;
           onChange(next);
         }}
-        displayEmpty
+        displayEmpty={!isMultiple}
+        multiple={isMultiple}
       >
-        {placeholder && (
+        {!isMultiple && placeholder && (
           <MenuItem value="" disabled>
             {placeholder}
           </MenuItem>

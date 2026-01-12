@@ -9,7 +9,7 @@ import { WidgetProps, enumOptionsIndexForValue } from '@rjsf/utils';
 
 export default function RadioWidget(props: WidgetProps) {
   const { id, label, value, required, disabled, readonly, onChange, options, rawErrors } = props;
-  const { enumOptions, enumDisabled } = options;
+  const { enumOptions, enumDisabled, emptyValue } = options;
   const showError = rawErrors && rawErrors.length > 0;
   const selectedIndex = enumOptionsIndexForValue(value, enumOptions) ?? -1;
 
@@ -21,7 +21,7 @@ export default function RadioWidget(props: WidgetProps) {
         value={selectedIndex}
         onChange={(event) => {
           const index = Number(event.target.value);
-          const next = enumOptions && enumOptions[index] ? enumOptions[index].value : undefined;
+          const next = enumOptions && enumOptions[index] ? enumOptions[index].value : emptyValue;
           onChange(next);
         }}
       >
