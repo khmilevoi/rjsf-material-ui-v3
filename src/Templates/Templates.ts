@@ -17,6 +17,7 @@ import FieldErrorTemplate from './FieldErrorTemplate';
 import FieldHelpTemplate from './FieldHelpTemplate';
 import FieldTemplate from './FieldTemplate';
 import GridTemplate from './GridTemplate';
+import HelpTemplate from './HelpTemplate';
 import MultiSchemaFieldTemplate from './MultiSchemaFieldTemplate';
 import ObjectFieldTemplate from './ObjectFieldTemplate';
 import OptionalDataControlsTemplate from './OptionalDataControlsTemplate';
@@ -47,6 +48,7 @@ export function generateTemplates<
     FieldHelpTemplate,
     FieldTemplate,
     GridTemplate,
+    HelpTemplate,
     MultiSchemaFieldTemplate,
     ObjectFieldTemplate,
     OptionalDataControlsTemplate,
