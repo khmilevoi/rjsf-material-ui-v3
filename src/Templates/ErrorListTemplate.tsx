@@ -12,7 +12,7 @@ export default function ErrorListTemplate({ errors, registry }: ErrorListProps) 
   }
   const translateString = registry.translateString;
   const title = translateString
-    ? translateString(TranslatableString.ErrorsList)
+    ? translateString(TranslatableString.ErrorsLabel)
     : 'Errors';
 
   return (

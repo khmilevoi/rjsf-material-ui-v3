@@ -5,12 +5,12 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import { errorId, FieldErrorProps } from '@rjsf/utils';
 
 export default function FieldErrorTemplate(props: FieldErrorProps) {
-  const { errors = [], fieldPathId } = props;
+  const { errors = [], idSchema } = props;
   if (errors.length === 0) {
     return null;
   }
 
-  const id = errorId(fieldPathId);
+  const id = errorId(idSchema);
 
   return (
     <List id={id} dense disablePadding>

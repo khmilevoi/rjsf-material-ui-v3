@@ -1,5 +1,6 @@
 import React from 'react';
 import AddIcon from '@material-ui/icons/Add';
+import { Registry, RJSFSchema, UiSchema } from '@rjsf/utils';
 import { IconButtonTemplate, RemoveButton } from './ButtonTemplates';
 
 type OptionalDataControlsTemplateProps = {
@@ -7,11 +8,13 @@ type OptionalDataControlsTemplateProps = {
   label?: string;
   onAddClick?: (event?: React.MouseEvent) => void;
   onRemoveClick?: (event?: React.MouseEvent) => void;
+  registry: Registry;
+  uiSchema?: UiSchema<unknown, RJSFSchema>;
   [key: string]: unknown;
 };
 
 export default function OptionalDataControlsTemplate(props: OptionalDataControlsTemplateProps) {
-  const { id, label, onAddClick, onRemoveClick, ...buttonProps } = props;
+  const { id, label, onAddClick, onRemoveClick, registry, uiSchema, ...buttonProps } = props;
 
   if (onAddClick) {
     return (
@@ -21,6 +24,8 @@ export default function OptionalDataControlsTemplate(props: OptionalDataControls
         onClick={onAddClick}
         title={label}
         icon={<AddIcon fontSize="small" />}
+        registry={registry}
+        uiSchema={uiSchema}
         {...buttonProps}
       />
     );
@@ -33,6 +38,8 @@ export default function OptionalDataControlsTemplate(props: OptionalDataControls
         className="rjsf-remove-optional-data"
         onClick={onRemoveClick}
         title={label}
+        registry={registry}
+        uiSchema={uiSchema}
         {...buttonProps}
       />
     );

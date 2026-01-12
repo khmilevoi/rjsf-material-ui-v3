@@ -23,7 +23,7 @@ export default function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType
   const ButtonTemplates = registry.templates.ButtonTemplates;
 
   return (
-    <Grid container spacing={1} alignItems="center" className={className}>
+    <Grid container spacing={8} alignItems="center" className={className}>
       <Grid item xs>
         {children}
       </Grid>

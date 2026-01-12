@@ -25,7 +25,7 @@ export default function WrapIfAdditionalTemplate(props: WrapIfAdditionalTemplate
   const ButtonTemplates = registry.templates.ButtonTemplates;
 
   return (
-    <Grid container spacing={1} alignItems="center" className={classNames}>
+    <Grid container spacing={8} alignItems="center" className={classNames}>
       <Grid item xs={5}>
         <TextField
           id={`${id}-key`}
@@ -46,6 +46,8 @@ export default function WrapIfAdditionalTemplate(props: WrapIfAdditionalTemplate
           title="Remove"
           onClick={onDropPropertyClick(label)}
           disabled={disabled || readonly}
+          uiSchema={uiSchema}
+          registry={registry}
         />
       </Grid>
     </Grid>
