@@ -67,15 +67,16 @@ function SubmitButton({ uiSchema, ...props }: SubmitButtonTemplateProps) {
 function AddButton({ icon, title, uiSchema, children, ...props }: AddButtonProps) {
   const uiOptions = getUiOptions(uiSchema);
   const addButtonProps = uiOptions.addButtonProps ?? {};
+  const resolvedIcon = icon ?? <AddIcon />;
   return (
     <Button
       variant="contained"
       color="primary"
       aria-label={title}
-      startIcon={icon ?? <AddIcon />}
       {...addButtonProps}
       {...props}
     >
+      {resolvedIcon && <span style={{ display: 'inherit', marginRight: 8 }}>{resolvedIcon}</span>}
       {children}
     </Button>
   );

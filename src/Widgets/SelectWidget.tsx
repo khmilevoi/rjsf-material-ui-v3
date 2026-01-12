@@ -25,11 +25,10 @@ export default function SelectWidget(props: WidgetProps) {
 
   return (
     <FormControl fullWidth error={showError} disabled={disabled || readonly}>
-      <InputLabel id={`${id}-label`} required={required}>
+      <InputLabel htmlFor={id} required={required}>
         {label}
       </InputLabel>
       <Select
-        labelId={`${id}-label`}
         id={id}
         value={enumOptionsIndexForValue(value, enumOptions) ?? ''}
         onChange={(event) => {
@@ -38,6 +37,7 @@ export default function SelectWidget(props: WidgetProps) {
           onChange(next);
         }}
         displayEmpty
+        inputProps={{ id }}
       >
         {placeholder && (
           <MenuItem value="" disabled>
