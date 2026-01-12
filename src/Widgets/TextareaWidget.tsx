@@ -27,7 +27,7 @@ export default function TextareaWidget(props: WidgetProps) {
       id={id}
       fullWidth
       multiline
-      minRows={rows}
+      rows={rows}
       label={label}
       required={required}
       value={value ?? ''}
