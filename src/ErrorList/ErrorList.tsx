@@ -12,7 +12,7 @@ import { ErrorListProps, FormContextType, RJSFSchema, StrictRJSFSchema, Translat
  *
  * @param props - The `ErrorListProps` for this component
  */
-export default function ErrorListTemplate<
+export default function ErrorList<
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
   F extends FormContextType = any,

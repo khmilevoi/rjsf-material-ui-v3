@@ -8,21 +8,21 @@ import {
 } from '../IconButton';
 import AddButton from '../AddButton';
 import SubmitButton from '../SubmitButton';
-import ArrayFieldItemTemplate from './ArrayFieldItemTemplate';
-import ArrayFieldTemplate from './ArrayFieldTemplate';
-import BaseInputTemplate from './BaseInputTemplate';
-import DescriptionField from './DescriptionFieldTemplate';
-import ErrorList from './ErrorListTemplate';
-import FieldErrorTemplate from './FieldErrorTemplate';
-import FieldHelpTemplate from './FieldHelpTemplate';
-import FieldTemplate from './FieldTemplate';
-import GridTemplate from './GridTemplate';
-import HelpTemplate from './HelpTemplate';
-import MultiSchemaFieldTemplate from './MultiSchemaFieldTemplate';
-import ObjectFieldTemplate from './ObjectFieldTemplate';
-import OptionalDataControlsTemplate from './OptionalDataControlsTemplate';
-import TitleField from './TitleFieldTemplate';
-import WrapIfAdditionalTemplate from './WrapIfAdditionalTemplate';
+import ArrayFieldItemTemplate from '../ArrayFieldItemTemplate';
+import ArrayFieldTemplate from '../ArrayFieldTemplate';
+import BaseInputTemplate from '../BaseInputTemplate';
+import DescriptionField from '../DescriptionField';
+import ErrorList from '../ErrorList';
+import FieldErrorTemplate from '../FieldErrorTemplate';
+import FieldHelpTemplate from '../FieldHelpTemplate';
+import FieldTemplate from '../FieldTemplate';
+import GridTemplate from '../GridTemplate';
+import HelpTemplate from '../HelpTemplate';
+import MultiSchemaFieldTemplate from '../MultiSchemaFieldTemplate';
+import ObjectFieldTemplate from '../ObjectFieldTemplate';
+import OptionalDataControlsTemplate from '../OptionalDataControlsTemplate';
+import TitleField from '../TitleField';
+import WrapIfAdditionalTemplate from '../WrapIfAdditionalTemplate';
 
 export function generateTemplates<
   T = any,
