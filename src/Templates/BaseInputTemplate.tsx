@@ -1,84 +1,125 @@
-import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import { BaseInputTemplateProps, getUiOptions } from '@rjsf/utils';
+import { ChangeEvent, FocusEvent, MouseEvent, useCallback } from 'react';
+import TextField, { TextFieldProps } from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import {
+  ariaDescribedByIds,
+  BaseInputTemplateProps,
+  examplesId,
+  FormContextType,
+  getInputProps,
+  labelValue,
+  RJSFSchema,
+  StrictRJSFSchema,
+} from '@rjsf/utils';
 
-export default function BaseInputTemplate(props: BaseInputTemplateProps) {
+const TYPES_THAT_SHRINK_LABEL = ['date', 'datetime-local', 'file', 'time'];
+
+/** The `BaseInputTemplate` is the template to use to render the basic `<input>` component for the `core` theme.
+ * It is used as the template for rendering many of the <input> based widgets that differ by `type` and callbacks only.
+ * It can be customized/overridden for other themes or individual implementations as needed.
+ *
+ * @param props - The `WidgetProps` for this template
+ */
+export default function BaseInputTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: BaseInputTemplateProps<T, S, F>) {
   const {
     id,
+    name, // remove this from textFieldProps
+    htmlName,
     placeholder,
     required,
     readonly,
     disabled,
     type,
     label,
+    hideLabel,
+    hideError,
     value,
     onChange,
+    onChangeOverride,
     onBlur,
     onFocus,
     autofocus,
-    rawErrors,
+    options,
     schema,
     uiSchema,
-    options,
-    ariaDescribedByIds,
+    rawErrors = [],
+    errorSchema,
+    registry,
+    InputLabelProps,
+    ...textFieldProps
   } = props;
-
-  const uiOptions = {
-    ...(getUiOptions(uiSchema) as Record<string, unknown>),
-    ...(options as Record<string, unknown>),
-  } as {
-    emptyValue?: unknown;
-    inputType?: string;
-    inputProps?: Record<string, unknown>;
-    InputProps?: React.ComponentProps<typeof TextField>['InputProps'];
-    autocomplete?: string;
-    multiline?: boolean;
-    rows?: number;
+  const { ClearButton } = registry.templates.ButtonTemplates;
+  const inputProps = getInputProps<T, S, F>(schema, type, options);
+  // Now we need to pull out the step, min, max into an inner `inputProps` for material-ui
+  const { step, min, max, accept, ...rest } = inputProps;
+  const describedBy = ariaDescribedByIds(id, !!schema.examples);
+  const htmlInputProps = {
+    step,
+    min,
+    max,
+    accept,
+    ...(schema.examples ? { list: examplesId(id) } : undefined),
+    'aria-describedby': describedBy,
   };
-  const showError = rawErrors && rawErrors.length > 0;
-  const helperText = showError ? rawErrors?.join(', ') : undefined;
-  const emptyValue = uiOptions.emptyValue ?? schema.default ?? '';
-  const inputType = uiOptions.inputType ?? type;
-  const examples = Array.isArray(schema.examples) ? schema.examples : undefined;
-  const listId = examples && examples.length > 0 ? `${id}-examples` : undefined;
-  const inputProps = {
-    ...(uiOptions.inputProps ?? {}),
-    'aria-describedby': ariaDescribedByIds,
-    'aria-invalid': showError || undefined,
-    list: listId,
-  };
+  const _onChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
+    onChange(value === '' ? options.emptyValue : value);
+  const _onBlur = ({ target }: FocusEvent<HTMLInputElement>) => onBlur(id, target && target.value);
+  const _onFocus = ({ target }: FocusEvent<HTMLInputElement>) => onFocus(id, target && target.value);
+  const DisplayInputLabelProps = TYPES_THAT_SHRINK_LABEL.includes(type)
+    ? {
+        ...InputLabelProps,
+        shrink: true,
+      }
+    : InputLabelProps;
+  const _onClear = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onChange(options.emptyValue ?? '');
+    },
+    [onChange, options.emptyValue],
+  );
 
   return (
     <>
       <TextField
         id={id}
-        fullWidth
-        label={label}
+        name={htmlName || id}
         placeholder={placeholder}
-        required={required}
-        disabled={disabled}
+        label={labelValue(label || undefined, hideLabel, undefined)}
         autoFocus={autofocus}
-        autoComplete={uiOptions.autocomplete}
-        type={inputType}
-        value={value ?? ''}
-        error={showError}
-        helperText={helperText}
-        InputProps={{ readOnly: readonly, ...(uiOptions.InputProps ?? {}) }}
-        inputProps={inputProps}
-        InputLabelProps={{ shrink: inputType === 'date' || inputType === 'datetime-local' }}
-        multiline={uiOptions.multiline}
-        rows={uiOptions.rows}
-        onChange={(event) =>
-          onChange(event.target.value === '' ? emptyValue : event.target.value)
-        }
-        onBlur={onBlur && ((event) => onBlur(id, event.target.value))}
-        onFocus={onFocus && ((event) => onFocus(id, event.target.value))}
+        required={required}
+        disabled={disabled || readonly}
+        InputLabelProps={DisplayInputLabelProps}
+        inputProps={{ ...htmlInputProps, ...textFieldProps.inputProps }}
+        {...rest}
+        value={value || value === 0 ? value : ''}
+        error={rawErrors.length > 0}
+        onChange={onChangeOverride || _onChange}
+        onBlur={_onBlur}
+        onFocus={_onFocus}
+        {...(textFieldProps as TextFieldProps)}
+        InputProps={{
+          ...textFieldProps.InputProps,
+          endAdornment:
+            options.allowClearTextInputs && value && !readonly && !disabled ? (
+              <InputAdornment position="end">
+                <ClearButton registry={registry} onClick={_onClear} />
+              </InputAdornment>
+            ) : undefined,
+        }}
       />
-      {listId && (
-        <datalist id={listId}>
-          {examples?.map((example: unknown, index: number) => (
-            <option key={String(example) + index} value={String(example)} />
-          ))}
+      {Array.isArray(schema.examples) && (
+        <datalist id={examplesId(id)}>
+          {(schema.examples as string[])
+            .concat(schema.default && !schema.examples.includes(schema.default) ? ([schema.default] as string[]) : [])
+            .map((example: any) => {
+              return <option key={example} value={example} />;
+            })}
         </datalist>
       )}
     </>

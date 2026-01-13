@@ -1,133 +1,93 @@
-import React from 'react';
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { ArrayFieldTemplateProps, getUiOptions } from '@rjsf/utils';
+import {
+  ArrayFieldTemplateProps,
+  FormContextType,
+  getTemplate,
+  getUiOptions,
+  RJSFSchema,
+  StrictRJSFSchema,
+  buttonId,
+} from '@rjsf/utils';
 
-export default function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
+/** The `ArrayFieldTemplate` component is the template used to render all items in an array.
+ *
+ * @param props - The `ArrayFieldTemplateProps` props for the component
+ */
+export default function ArrayFieldTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: ArrayFieldTemplateProps<T, S, F>) {
   const {
-    items,
     canAdd,
-    onAddClick,
-    title,
-    required,
-    uiSchema,
     disabled,
+    fieldPathId,
+    uiSchema,
+    items,
+    optionalDataControl,
+    onAddClick,
     readonly,
-    schema,
     registry,
+    required,
+    schema,
+    title,
   } = props;
-  const uiOptions = getUiOptions(uiSchema);
-  const titleText = uiOptions.label === false ? undefined : title;
-  const addable = uiOptions.addable !== false;
-  const orderable = uiOptions.orderable !== false;
-  const removable = uiOptions.removable !== false;
-  const copyable = uiOptions.copyable !== false;
-  const ButtonTemplates = registry.templates.ButtonTemplates;
-  const examples = Array.isArray(schema.examples) ? schema.examples : undefined;
-  const addButtonLabel = String(uiOptions.addButtonLabel ?? uiOptions.addText ?? 'Add Item');
-  const getAddClickHandler = (example?: unknown) => {
-    if (example === undefined) {
-      return onAddClick;
-    }
-    return (event: React.MouseEvent) => {
-      const result = (onAddClick as unknown as (value?: unknown) => unknown)(example);
-      if (typeof result === 'function') {
-        result(event);
-        return;
-      }
-      (onAddClick as unknown as (evt: React.MouseEvent) => void)(event);
-    };
-  };
-
+  const uiOptions = getUiOptions<T, S, F>(uiSchema);
+  const ArrayFieldDescriptionTemplate = getTemplate<'ArrayFieldDescriptionTemplate', T, S, F>(
+    'ArrayFieldDescriptionTemplate',
+    registry,
+    uiOptions,
+  );
+  const ArrayFieldTitleTemplate = getTemplate<'ArrayFieldTitleTemplate', T, S, F>(
+    'ArrayFieldTitleTemplate',
+    registry,
+    uiOptions,
+  );
+  const showOptionalDataControlInTitle = !readonly && !disabled;
+  // Button templates are not overridden in the uiSchema
+  const {
+    ButtonTemplates: { AddButton },
+  } = registry.templates;
   return (
-    <Grid container spacing={16}>
-      {titleText && (
-        <Grid item xs={12}>
-          <strong>
-            {titleText}
-            {required ? ' *' : null}
-          </strong>
-        </Grid>
-      )}
-      {items.map((item) => (
-        <Grid item xs={12} key={item.key}>
-          <Paper elevation={0} style={{ padding: 8 }}>
-            <Grid container spacing={8} alignItems="center">
-              <Grid item xs>
-                {item.children}
-              </Grid>
-              {item.hasToolbar && (orderable || removable || copyable) && (
-                <Grid item>
-                  {orderable && item.hasMoveUp && (
-                    <ButtonTemplates.MoveUpButton
-                      onClick={item.onReorderClick(item.index, item.index - 1)}
-                      disabled={disabled || readonly}
-                      uiSchema={uiSchema}
-                      registry={registry}
-                    />
-                  )}
-                  {orderable && item.hasMoveDown && (
-                    <ButtonTemplates.MoveDownButton
-                      onClick={item.onReorderClick(item.index, item.index + 1)}
-                      disabled={disabled || readonly}
-                      uiSchema={uiSchema}
-                      registry={registry}
-                    />
-                  )}
-                  {copyable && item.hasCopy && (
-                    <ButtonTemplates.CopyButton
-                      onClick={item.onCopyIndexClick(item.index)}
-                      disabled={disabled || readonly}
-                      uiSchema={uiSchema}
-                      registry={registry}
-                    />
-                  )}
-                  {removable && item.hasRemove && (
-                    <ButtonTemplates.RemoveButton
-                      onClick={item.onDropIndexClick(item.index)}
-                      disabled={disabled || readonly}
-                      uiSchema={uiSchema}
-                      registry={registry}
-                    />
-                  )}
-                </Grid>
-              )}
-            </Grid>
-          </Paper>
-        </Grid>
-      ))}
-      {canAdd && addable && (
-        <Grid item xs={12}>
-          {examples && examples.length > 0 ? (
-            examples.map((example: unknown, index: number) => {
-              const exampleLabel =
-                typeof example === 'string' || typeof example === 'number'
-                  ? String(example)
-                  : addButtonLabel;
-              return (
-                <ButtonTemplates.AddButton
-                  key={`example-${index}`}
-                  onClick={getAddClickHandler(example)}
+    <Paper elevation={2}>
+      <Box p={2}>
+        <ArrayFieldTitleTemplate
+          fieldPathId={fieldPathId}
+          title={uiOptions.title || title}
+          schema={schema}
+          uiSchema={uiSchema}
+          required={required}
+          registry={registry}
+          optionalDataControl={showOptionalDataControlInTitle ? optionalDataControl : undefined}
+        />
+        <ArrayFieldDescriptionTemplate
+          fieldPathId={fieldPathId}
+          description={uiOptions.description || schema.description}
+          schema={schema}
+          uiSchema={uiSchema}
+          registry={registry}
+        />
+        {!showOptionalDataControlInTitle ? optionalDataControl : undefined}
+        {items}
+        {canAdd && (
+          <Grid container justify="flex-end">
+            <Grid item>
+              <Box mt={2}>
+                <AddButton
+                  id={buttonId(fieldPathId, 'add')}
+                  className="rjsf-array-item-add"
+                  onClick={onAddClick}
                   disabled={disabled || readonly}
                   uiSchema={uiSchema}
                   registry={registry}
-                >
-                  {exampleLabel}
-                </ButtonTemplates.AddButton>
-              );
-            })
-          ) : (
-            <ButtonTemplates.AddButton
-              onClick={getAddClickHandler()}
-              disabled={disabled || readonly}
-              uiSchema={uiSchema}
-              registry={registry}
-            >
-              {addButtonLabel}
-            </ButtonTemplates.AddButton>
-          )}
-        </Grid>
-      )}
-    </Grid>
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        )}
+      </Box>
+    </Paper>
   );
 }

@@ -1,32 +1,40 @@
-import React from 'react';
+import Box from '@material-ui/core/Box';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { ErrorListProps, TranslatableString } from '@rjsf/utils';
+import ErrorIcon from '@material-ui/icons/Error';
+import { ErrorListProps, FormContextType, RJSFSchema, StrictRJSFSchema, TranslatableString } from '@rjsf/utils';
 
-export default function ErrorListTemplate({ errors, registry }: ErrorListProps) {
-  if (!errors || errors.length === 0) {
-    return null;
-  }
-  const translateString = registry.translateString;
-  const title = translateString
-    ? translateString(TranslatableString.ErrorsLabel)
-    : 'Errors';
-
+/** The `ErrorList` component is the template that renders the all the errors associated with the fields in the `Form`
+ *
+ * @param props - The `ErrorListProps` for this component
+ */
+export default function ErrorListTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>({ errors, registry }: ErrorListProps<T, S, F>) {
+  const { translateString } = registry;
   return (
-    <Paper elevation={0} style={{ padding: 16, marginBottom: 16 }}>
-      <Typography variant="subtitle1" color="error">
-        {title}
-      </Typography>
-      <List dense>
-        {errors.map((error, index) => (
-          <ListItem key={error.stack ?? error.message ?? String(index)}>
-            <ListItemText primary={error.stack || error.message} />
-          </ListItem>
-        ))}
-      </List>
+    <Paper elevation={2}>
+      <Box mb={2} p={2}>
+        <Typography variant="h6">{translateString(TranslatableString.ErrorsLabel)}</Typography>
+        <List dense>
+          {errors.map((error, i: number) => {
+            return (
+              <ListItem key={i}>
+                <ListItemIcon>
+                  <ErrorIcon color="error" />
+                </ListItemIcon>
+                <ListItemText primary={error.stack} />
+              </ListItem>
+            );
+          })}
+        </List>
+      </Box>
     </Paper>
   );
 }

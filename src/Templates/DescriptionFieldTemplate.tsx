@@ -1,15 +1,24 @@
-import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { DescriptionFieldProps } from '@rjsf/utils';
+import { RichDescription } from '@rjsf/core';
+import { DescriptionFieldProps, FormContextType, RJSFSchema, StrictRJSFSchema } from '@rjsf/utils';
 
-export default function DescriptionFieldTemplate({ id, description }: DescriptionFieldProps) {
-  if (!description) {
-    return null;
+/** The `DescriptionField` is the template to use to render the description of a field
+ *
+ * @param props - The `DescriptionFieldProps` for this component
+ */
+export default function DescriptionFieldTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: DescriptionFieldProps<T, S, F>) {
+  const { id, description, registry, uiSchema } = props;
+  if (description) {
+    return (
+      <Typography id={id} variant="subtitle2" style={{ marginTop: '5px' }}>
+        <RichDescription description={description} registry={registry} uiSchema={uiSchema} />
+      </Typography>
+    );
   }
 
-  return (
-    <Typography id={id} variant="body2" color="textSecondary">
-      {description}
-    </Typography>
-  );
+  return null;
 }
