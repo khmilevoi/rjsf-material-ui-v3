@@ -1,7 +1,7 @@
 import React from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import { Registry, RJSFSchema, UiSchema } from '@rjsf/utils';
-import { IconButtonTemplate, RemoveButton } from './ButtonTemplates';
+import MuiIconButton, { RemoveButton } from '../IconButton';
 
 type OptionalDataControlsTemplateProps = {
   id: string;
@@ -18,7 +18,7 @@ export default function OptionalDataControlsTemplate(props: OptionalDataControls
 
   if (onAddClick) {
     return (
-      <IconButtonTemplate
+      <MuiIconButton
         id={id}
         className="rjsf-add-optional-data"
         onClick={onAddClick}

@@ -6,10 +6,11 @@ import {
   MoveUpButton,
   RemoveButton,
 } from '../IconButton';
+import AddButton from '../AddButton';
+import SubmitButton from '../SubmitButton';
 import ArrayFieldItemTemplate from './ArrayFieldItemTemplate';
 import ArrayFieldTemplate from './ArrayFieldTemplate';
 import BaseInputTemplate from './BaseInputTemplate';
-import { AddButton, SubmitButton } from './ButtonTemplates';
 import DescriptionField from './DescriptionFieldTemplate';
 import ErrorList from './ErrorListTemplate';
 import FieldErrorTemplate from './FieldErrorTemplate';
