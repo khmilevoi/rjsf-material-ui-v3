@@ -1,5 +1,9 @@
-import Grid from '@material-ui/core/Grid';
-import { GridTemplateProps } from '@rjsf/utils';
+import React from 'react';
+import Grid, { GridProps } from '@material-ui/core/Grid';
+
+export type GridTemplateProps = GridProps & {
+  column?: boolean;
+};
 
 /** Renders a `GridTemplate` for mui, which is expecting the column sizing information coming in via the
  * extra props provided by the caller, which are spread directly on the `Grid`.

@@ -1,15 +1,16 @@
-import Box from '@material-ui/core/Box';
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import {
   ArrayFieldTemplateProps,
+  ArrayFieldTemplateItemType,
   FormContextType,
   getTemplate,
   getUiOptions,
   RJSFSchema,
   StrictRJSFSchema,
-  buttonId,
 } from '@rjsf/utils';
+import Box from '../Box';
 
 /** The `ArrayFieldTemplate` component is the template used to render all items in an array.
  *
@@ -22,11 +23,11 @@ export default function ArrayFieldTemplate<
 >(props: ArrayFieldTemplateProps<T, S, F>) {
   const {
     canAdd,
+    className,
     disabled,
-    fieldPathId,
+    idSchema,
     uiSchema,
     items,
-    optionalDataControl,
     onAddClick,
     readonly,
     registry,
@@ -40,43 +41,47 @@ export default function ArrayFieldTemplate<
     registry,
     uiOptions,
   );
+  const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
+    'ArrayFieldItemTemplate',
+    registry,
+    uiOptions,
+  );
   const ArrayFieldTitleTemplate = getTemplate<'ArrayFieldTitleTemplate', T, S, F>(
     'ArrayFieldTitleTemplate',
     registry,
     uiOptions,
   );
-  const showOptionalDataControlInTitle = !readonly && !disabled;
   // Button templates are not overridden in the uiSchema
   const {
     ButtonTemplates: { AddButton },
   } = registry.templates;
   return (
-    <Paper elevation={2}>
+    <Paper elevation={2} className={className} id={idSchema.$id}>
       <Box p={2}>
         <ArrayFieldTitleTemplate
-          fieldPathId={fieldPathId}
+          idSchema={idSchema}
           title={uiOptions.title || title}
           schema={schema}
           uiSchema={uiSchema}
           required={required}
           registry={registry}
-          optionalDataControl={showOptionalDataControlInTitle ? optionalDataControl : undefined}
         />
         <ArrayFieldDescriptionTemplate
-          fieldPathId={fieldPathId}
+          idSchema={idSchema}
           description={uiOptions.description || schema.description}
           schema={schema}
           uiSchema={uiSchema}
           registry={registry}
         />
-        {!showOptionalDataControlInTitle ? optionalDataControl : undefined}
-        {items}
+        {items &&
+          items.map(({ key, ...itemProps }: ArrayFieldTemplateItemType<T, S, F>) => (
+            <ArrayFieldItemTemplate key={key} {...itemProps} />
+          ))}
         {canAdd && (
           <Grid container justify="flex-end">
             <Grid item>
               <Box mt={2}>
                 <AddButton
-                  id={buttonId(fieldPathId, 'add')}
                   className="rjsf-array-item-add"
                   onClick={onAddClick}
                   disabled={disabled || readonly}

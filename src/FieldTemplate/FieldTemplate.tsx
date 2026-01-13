@@ -1,3 +1,4 @@
+import React from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 import {
@@ -22,15 +23,10 @@ export default function FieldTemplate<
   const {
     id,
     children,
-    classNames,
-    style,
     disabled,
     displayLabel,
     hidden,
     label,
-    onKeyRename,
-    onKeyRenameBlur,
-    onRemoveProperty,
     readonly,
     required,
     rawErrors = [],
@@ -56,23 +52,7 @@ export default function FieldTemplate<
   const isCheckbox = uiOptions.widget === 'checkbox';
 
   return (
-    <WrapIfAdditionalTemplate
-      classNames={classNames}
-      style={style}
-      disabled={disabled}
-      id={id}
-      label={label}
-      displayLabel={displayLabel}
-      rawDescription={rawDescription}
-      onKeyRename={onKeyRename}
-      onKeyRenameBlur={onKeyRenameBlur}
-      onRemoveProperty={onRemoveProperty}
-      readonly={readonly}
-      required={required}
-      schema={schema}
-      uiSchema={uiSchema}
-      registry={registry}
-    >
+    <WrapIfAdditionalTemplate {...props}>
       <FormControl fullWidth error={rawErrors.length ? true : false} required={required}>
         {children}
         {displayLabel && !isCheckbox && rawDescription ? (

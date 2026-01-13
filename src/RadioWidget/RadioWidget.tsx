@@ -1,4 +1,4 @@
-import { FocusEvent } from "react";
+import React, { FocusEvent } from "react";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
@@ -47,7 +47,7 @@ export default function RadioWidget<
     onFocus(id, enumOptionsValueForIndex<S>(target && target.value, enumOptions, emptyValue));
 
   const row = options ? options.inline : false;
-  const selectedIndex = enumOptionsIndexForValue<S>(value, enumOptions) ?? null;
+  const selectedIndex = enumOptionsIndexForValue<S>(value, enumOptions);
 
   return (
     <>
@@ -60,7 +60,7 @@ export default function RadioWidget<
       <RadioGroup
         id={id}
         name={htmlName || id}
-        value={selectedIndex}
+        value={typeof selectedIndex === "number" ? String(selectedIndex) : ""}
         row={row as boolean}
         onChange={_onChange}
         onBlur={_onBlur}

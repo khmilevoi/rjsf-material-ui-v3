@@ -1,4 +1,4 @@
-import { ChangeEvent, FocusEvent, MouseEvent, useCallback } from 'react';
+import React, { ChangeEvent, FocusEvent, MouseEvent, useCallback } from 'react';
 import TextField, { TextFieldProps } from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import {
@@ -7,6 +7,7 @@ import {
   examplesId,
   FormContextType,
   getInputProps,
+  IconButtonProps,
   labelValue,
   RJSFSchema,
   StrictRJSFSchema,
@@ -52,7 +53,9 @@ export default function BaseInputTemplate<
     InputLabelProps,
     ...textFieldProps
   } = props;
-  const { ClearButton } = registry.templates.ButtonTemplates;
+  const { ClearButton } = registry.templates.ButtonTemplates as typeof registry.templates.ButtonTemplates & {
+    ClearButton?: React.ComponentType<IconButtonProps<T, S, F>>;
+  };
   const inputProps = getInputProps<T, S, F>(schema, type, options);
   // Now we need to pull out the step, min, max into an inner `inputProps` for material-ui
   const { step, min, max, accept, ...rest } = inputProps;
@@ -106,7 +109,7 @@ export default function BaseInputTemplate<
         InputProps={{
           ...textFieldProps.InputProps,
           endAdornment:
-            options.allowClearTextInputs && value && !readonly && !disabled ? (
+            options.allowClearTextInputs && value && !readonly && !disabled && ClearButton ? (
               <InputAdornment position="end">
                 <ClearButton registry={registry} onClick={_onClear} />
               </InputAdornment>

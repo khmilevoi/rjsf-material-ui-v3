@@ -1,8 +1,9 @@
-import Box from '@material-ui/core/Box';
+import React from 'react';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { FormContextType, TitleFieldProps, RJSFSchema, StrictRJSFSchema } from '@rjsf/utils';
+import Box from '../Box';
 
 /** The `TitleField` is the template to use to render the title of a field
  *
@@ -12,7 +13,11 @@ export default function TitleField<
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
   F extends FormContextType = any,
->({ id, title, optionalDataControl }: TitleFieldProps<T, S, F>) {
+>({
+  id,
+  title,
+  optionalDataControl,
+}: TitleFieldProps<T, S, F> & { optionalDataControl?: React.ReactNode }) {
   let heading = <Typography variant="h5">{title}</Typography>;
   if (optionalDataControl) {
     heading = (

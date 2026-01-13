@@ -1,6 +1,8 @@
+import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import {
   FormContextType,
+  ObjectFieldTemplatePropertyType,
   ObjectFieldTemplateProps,
   RJSFSchema,
   StrictRJSFSchema,
@@ -9,7 +11,6 @@ import {
   getTemplate,
   getUiOptions,
   titleId,
-  buttonId,
 } from '@rjsf/utils';
 
 /** The `ObjectFieldTemplate` is the template to use to render all the inner properties of an object along with the
@@ -25,18 +26,17 @@ export default function ObjectFieldTemplate<
 >(props: ObjectFieldTemplateProps<T, S, F>) {
   const {
     description,
-    title,
-    properties,
-    required,
     disabled,
-    readonly,
-    uiSchema,
-    fieldPathId,
-    schema,
     formData,
-    optionalDataControl,
-    onAddProperty,
+    idSchema,
+    onAddClick,
+    properties,
+    readonly,
     registry,
+    required,
+    schema,
+    title,
+    uiSchema,
   } = props;
   const uiOptions = getUiOptions<T, S, F>(uiSchema);
   const TitleFieldTemplate = getTemplate<'TitleFieldTemplate', T, S, F>('TitleFieldTemplate', registry, uiOptions);
@@ -45,7 +45,6 @@ export default function ObjectFieldTemplate<
     registry,
     uiOptions,
   );
-  const showOptionalDataControlInTitle = !readonly && !disabled;
   // Button templates are not overridden in the uiSchema
   const {
     ButtonTemplates: { AddButton },
@@ -54,33 +53,36 @@ export default function ObjectFieldTemplate<
     <>
       {title && (
         <TitleFieldTemplate
-          id={titleId(fieldPathId)}
+          id={titleId<T>(idSchema)}
           title={title}
           required={required}
           schema={schema}
           uiSchema={uiSchema}
           registry={registry}
-          optionalDataControl={showOptionalDataControlInTitle ? optionalDataControl : undefined}
         />
       )}
       {description && (
         <DescriptionFieldTemplate
-          id={descriptionId(fieldPathId)}
+          id={descriptionId<T>(idSchema)}
           description={description}
           schema={schema}
           uiSchema={uiSchema}
           registry={registry}
         />
       )}
-      <Grid container spacing={2} style={{ marginTop: '10px' }}>
-        {!showOptionalDataControlInTitle ? optionalDataControl : undefined}
+      <Grid container spacing={16} style={{ marginTop: '10px' }}>
         {properties.map((element, index) =>
           // Remove the <Grid> if the inner element is hidden as the <Grid>
           // itself would otherwise still take up space.
           element.hidden ? (
             element.content
           ) : (
-            <Grid item xs={12} key={index} style={{ marginBottom: '10px' }}>
+            <Grid
+              item
+              xs={12}
+              key={(element as ObjectFieldTemplatePropertyType).name || index}
+              style={{ marginBottom: '10px' }}
+            >
               {element.content}
             </Grid>
           ),
@@ -90,9 +92,8 @@ export default function ObjectFieldTemplate<
         <Grid container justify="flex-end">
           <Grid item>
             <AddButton
-              id={buttonId(fieldPathId, 'add')}
               className="rjsf-object-property-expand"
-              onClick={onAddProperty}
+              onClick={onAddClick(schema)}
               disabled={disabled || readonly}
               uiSchema={uiSchema}
               registry={registry}

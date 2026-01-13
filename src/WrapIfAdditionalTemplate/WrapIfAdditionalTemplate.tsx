@@ -1,9 +1,8 @@
-import { CSSProperties } from 'react';
+import React, { CSSProperties } from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import {
   ADDITIONAL_PROPERTY_FLAG,
-  buttonId,
   FormContextType,
   RJSFSchema,
   StrictRJSFSchema,
@@ -28,9 +27,8 @@ export default function WrapIfAdditionalTemplate<
     disabled,
     id,
     label,
-    displayLabel,
-    onKeyRenameBlur,
-    onRemoveProperty,
+    onKeyChange,
+    onDropPropertyClick,
     readonly,
     required,
     schema,
@@ -58,17 +56,17 @@ export default function WrapIfAdditionalTemplate<
   }
 
   return (
-    <Grid container key={`${id}-key`} alignItems="flex-start" spacing={2} className={classNames} style={style}>
+    <Grid container key={`${id}-key`} alignItems="flex-start" spacing={16} className={classNames} style={style}>
       <Grid item xs={12} sm={5}>
         <TextField
           fullWidth
           required={required}
-          label={displayLabel ? keyLabel : undefined}
+          label={keyLabel}
           defaultValue={label}
           disabled={disabled || readonly}
           id={`${id}-key`}
           name={`${id}-key`}
-          onBlur={!readonly ? onKeyRenameBlur : undefined}
+          onBlur={!readonly ? ({ target }) => onKeyChange(target && target.value) : undefined}
           type="text"
         />
       </Grid>
@@ -77,12 +75,11 @@ export default function WrapIfAdditionalTemplate<
       </Grid>
       <Grid item xs={12} sm={2} style={{ marginTop: 12 }}>
         <RemoveButton
-          id={buttonId(id, 'remove')}
           className="rjsf-object-property-remove"
           iconType="default"
           style={btnStyle}
           disabled={disabled || readonly}
-          onClick={onRemoveProperty}
+          onClick={onDropPropertyClick(label)}
           uiSchema={uiSchema}
           registry={registry}
         />

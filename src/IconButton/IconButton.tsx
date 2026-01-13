@@ -1,3 +1,4 @@
+import React from "react";
 import IconButton, { IconButtonProps as MuiIconButtonProps } from "@material-ui/core/IconButton";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
@@ -90,7 +91,7 @@ export function ClearButton<T = any, S extends StrictRJSFSchema = RJSFSchema, F 
   } = otherProps;
   return (
     <MuiIconButton
-      title={translateString(TranslatableString.ClearButton)}
+      title={translateString(TranslatableString.ClearLabel)}
       {...otherProps}
       icon={<ClearIcon fontSize={iconType === "default" ? undefined : "small"} />}
     />

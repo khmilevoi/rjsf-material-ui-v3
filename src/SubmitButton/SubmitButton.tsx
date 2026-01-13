@@ -1,6 +1,7 @@
-import Box from '@material-ui/core/Box';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import { FormContextType, getSubmitButtonOptions, RJSFSchema, StrictRJSFSchema, SubmitButtonProps } from '@rjsf/utils';
+import Box from '../Box';
 
 /** The `SubmitButton` renders a button that represent the `Submit` action on a form
  */
