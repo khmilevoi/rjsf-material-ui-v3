@@ -6,7 +6,7 @@ import { DescriptionFieldProps, FormContextType, RJSFSchema, StrictRJSFSchema } 
  *
  * @param props - The `DescriptionFieldProps` for this component
  */
-export default function DescriptionFieldTemplate<
+export default function DescriptionField<
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
   F extends FormContextType = any,

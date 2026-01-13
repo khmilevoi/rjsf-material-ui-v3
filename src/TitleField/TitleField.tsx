@@ -8,7 +8,7 @@ import { FormContextType, TitleFieldProps, RJSFSchema, StrictRJSFSchema } from '
  *
  * @param props - The `TitleFieldProps` for this component
  */
-export default function TitleFieldTemplate<
+export default function TitleField<
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
   F extends FormContextType = any,
