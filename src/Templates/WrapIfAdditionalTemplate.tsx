@@ -43,7 +43,6 @@ export default function WrapIfAdditionalTemplate(props: WrapIfAdditionalTemplate
       </Grid>
       <Grid item xs={1}>
         <ButtonTemplates.RemoveButton
-          title="Remove"
           onClick={onDropPropertyClick(label)}
           disabled={disabled || readonly}
           uiSchema={uiSchema}

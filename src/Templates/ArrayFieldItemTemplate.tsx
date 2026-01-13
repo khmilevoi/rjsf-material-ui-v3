@@ -31,7 +31,6 @@ export default function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType
         <Grid item>
           {hasMoveUp && (
             <ButtonTemplates.MoveUpButton
-              title="Move up"
               disabled={disabled || readonly}
               onClick={onReorderClick(index, index - 1)}
               uiSchema={uiSchema}
@@ -40,7 +39,6 @@ export default function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType
           )}
           {hasMoveDown && (
             <ButtonTemplates.MoveDownButton
-              title="Move down"
               disabled={disabled || readonly}
               onClick={onReorderClick(index, index + 1)}
               uiSchema={uiSchema}
@@ -49,7 +47,6 @@ export default function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType
           )}
           {hasCopy && (
             <ButtonTemplates.CopyButton
-              title="Copy"
               disabled={disabled || readonly}
               onClick={onCopyIndexClick(index)}
               uiSchema={uiSchema}
@@ -58,7 +55,6 @@ export default function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType
           )}
           {hasRemove && (
             <ButtonTemplates.RemoveButton
-              title="Remove"
               disabled={disabled || readonly}
               onClick={onDropIndexClick(index)}
               uiSchema={uiSchema}

@@ -60,7 +60,6 @@ export default function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
                 <Grid item>
                   {orderable && item.hasMoveUp && (
                     <ButtonTemplates.MoveUpButton
-                      title="Move up"
                       onClick={item.onReorderClick(item.index, item.index - 1)}
                       disabled={disabled || readonly}
                       uiSchema={uiSchema}
@@ -69,7 +68,6 @@ export default function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
                   )}
                   {orderable && item.hasMoveDown && (
                     <ButtonTemplates.MoveDownButton
-                      title="Move down"
                       onClick={item.onReorderClick(item.index, item.index + 1)}
                       disabled={disabled || readonly}
                       uiSchema={uiSchema}
@@ -78,7 +76,6 @@ export default function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
                   )}
                   {copyable && item.hasCopy && (
                     <ButtonTemplates.CopyButton
-                      title="Copy"
                       onClick={item.onCopyIndexClick(item.index)}
                       disabled={disabled || readonly}
                       uiSchema={uiSchema}
@@ -87,7 +84,6 @@ export default function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
                   )}
                   {removable && item.hasRemove && (
                     <ButtonTemplates.RemoveButton
-                      title="Remove"
                       onClick={item.onDropIndexClick(item.index)}
                       disabled={disabled || readonly}
                       uiSchema={uiSchema}
@@ -111,7 +107,6 @@ export default function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
               return (
                 <ButtonTemplates.AddButton
                   key={`example-${index}`}
-                  title={exampleLabel}
                   onClick={getAddClickHandler(example)}
                   disabled={disabled || readonly}
                   uiSchema={uiSchema}
@@ -123,7 +118,6 @@ export default function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
             })
           ) : (
             <ButtonTemplates.AddButton
-              title={addButtonLabel}
               onClick={getAddClickHandler()}
               disabled={disabled || readonly}
               uiSchema={uiSchema}
