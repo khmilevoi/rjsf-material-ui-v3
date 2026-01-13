@@ -1,21 +1,20 @@
-import IconButton, { IconButtonProps as MuiIconButtonProps } from '@material-ui/core/IconButton';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
-import ClearIcon from '@material-ui/icons/Clear';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import RemoveIcon from '@material-ui/icons/Remove';
-import { FormContextType, IconButtonProps, RJSFSchema, StrictRJSFSchema, TranslatableString } from '@rjsf/utils';
+import IconButton, { IconButtonProps as MuiIconButtonProps } from "@material-ui/core/IconButton";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import CopyIcon from "@material-ui/icons/FileCopy";
+import RemoveIcon from "@material-ui/icons/Remove";
+import ClearIcon from "@material-ui/icons/Clear";
+import { FormContextType, IconButtonProps, RJSFSchema, StrictRJSFSchema, TranslatableString } from "@rjsf/utils";
 
 export default function MuiIconButton<
   T = any,
   S extends StrictRJSFSchema = RJSFSchema,
   F extends FormContextType = any
 >(props: IconButtonProps<T, S, F>) {
-  const { icon, color, uiSchema, registry, children, ...otherProps } = props;
+  const { icon, color, uiSchema, registry, ...otherProps } = props;
   return (
-    <IconButton {...(otherProps as MuiIconButtonProps)} color={color as MuiIconButtonProps['color']}>
+    <IconButton {...otherProps} color={color as MuiIconButtonProps["color"]}>
       {icon}
-      {children}
     </IconButton>
   );
 }
@@ -30,7 +29,7 @@ export function CopyButton<T = any, S extends StrictRJSFSchema = RJSFSchema, F e
     <MuiIconButton
       title={translateString(TranslatableString.CopyButton)}
       {...props}
-      icon={<FileCopyIcon fontSize="small" />}
+      icon={<CopyIcon fontSize="small" />}
     />
   );
 }
@@ -77,7 +76,7 @@ export function RemoveButton<T = any, S extends StrictRJSFSchema = RJSFSchema, F
       title={translateString(TranslatableString.RemoveButton)}
       {...otherProps}
       color="secondary"
-      icon={<RemoveIcon fontSize={iconType === 'default' ? undefined : 'small'} />}
+      icon={<RemoveIcon fontSize={iconType === "default" ? undefined : "small"} />}
     />
   );
 }
@@ -93,7 +92,7 @@ export function ClearButton<T = any, S extends StrictRJSFSchema = RJSFSchema, F 
     <MuiIconButton
       title={translateString(TranslatableString.ClearButton)}
       {...otherProps}
-      icon={<ClearIcon fontSize={iconType === 'default' ? undefined : 'small'} />}
+      icon={<ClearIcon fontSize={iconType === "default" ? undefined : "small"} />}
     />
   );
 }

@@ -1,45 +1,21 @@
-import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import { WidgetProps } from '@rjsf/utils';
+import { FormContextType, RJSFSchema, StrictRJSFSchema, WidgetProps, getTemplate } from "@rjsf/utils";
 
-export default function TextareaWidget(props: WidgetProps) {
-  const {
-    id,
-    label,
-    value,
-    required,
-    disabled,
-    readonly,
-    onChange,
-    onBlur,
-    onFocus,
-    autofocus,
-    placeholder,
-    rawErrors,
-    options,
-  } = props;
+/** The `TextareaWidget` is a widget for rendering input fields as textarea.
+ *
+ * @param props - The `WidgetProps` for this component
+ */
+export default function TextareaWidget<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any
+>(props: WidgetProps<T, S, F>) {
+  const { options, registry } = props;
+  const BaseInputTemplate = getTemplate<"BaseInputTemplate", T, S, F>("BaseInputTemplate", registry, options);
 
-  const showError = rawErrors && rawErrors.length > 0;
-  const rows = (options.rows as number | undefined) ?? 4;
+  let rows: string | number = 5;
+  if (typeof options.rows === "string" || typeof options.rows === "number") {
+    rows = options.rows;
+  }
 
-  return (
-    <TextField
-      id={id}
-      fullWidth
-      multiline
-      rows={rows}
-      label={label}
-      required={required}
-      value={value ?? ''}
-      placeholder={placeholder}
-      disabled={disabled}
-      autoFocus={autofocus}
-      error={showError}
-      helperText={showError ? rawErrors?.join(', ') : undefined}
-      InputProps={{ readOnly: readonly }}
-      onChange={(event) => onChange(event.target.value)}
-      onBlur={onBlur && ((event) => onBlur(id, event.target.value))}
-      onFocus={onFocus && ((event) => onFocus(id, event.target.value))}
-    />
-  );
+  return <BaseInputTemplate {...props} multiline rows={rows} />;
 }

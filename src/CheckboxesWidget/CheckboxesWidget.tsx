@@ -1,46 +1,93 @@
-import React from 'react';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormLabel from '@material-ui/core/FormLabel';
-import { WidgetProps } from '@rjsf/utils';
+import { ChangeEvent, FocusEvent } from "react";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormLabel from "@material-ui/core/FormLabel";
+import {
+  ariaDescribedByIds,
+  enumOptionsDeselectValue,
+  enumOptionsIsSelected,
+  enumOptionsSelectValue,
+  enumOptionsValueForIndex,
+  labelValue,
+  optionId,
+  FormContextType,
+  WidgetProps,
+  RJSFSchema,
+  StrictRJSFSchema,
+} from "@rjsf/utils";
 
-export default function CheckboxesWidget(props: WidgetProps) {
-  const { id, label, value, disabled, readonly, onChange, options, rawErrors } = props;
-  const showError = rawErrors && rawErrors.length > 0;
-  const enumOptions = options.enumOptions ?? [];
-  const enumDisabled = options.enumDisabled ?? [];
-  const selectedValues = Array.isArray(value) ? value : [];
+/** The `CheckboxesWidget` is a widget for rendering checkbox groups.
+ *  It is typically used to represent an array of enums.
+ *
+ * @param props - The `WidgetProps` for this component
+ */
+export default function CheckboxesWidget<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any
+>({
+  label,
+  hideLabel,
+  id,
+  htmlName,
+  disabled,
+  options,
+  value,
+  autofocus,
+  readonly,
+  required,
+  onChange,
+  onBlur,
+  onFocus,
+}: WidgetProps<T, S, F>) {
+  const { enumOptions, enumDisabled, inline, emptyValue } = options;
+  const checkboxesValues = Array.isArray(value) ? value : [value];
 
-  const handleToggle = (optionValue: unknown) => () => {
-    const nextValue = selectedValues.includes(optionValue)
-      ? selectedValues.filter((item) => item !== optionValue)
-      : [...selectedValues, optionValue];
-    onChange(nextValue);
-  };
+  const _onChange =
+    (index: number) =>
+    ({ target: { checked } }: ChangeEvent<HTMLInputElement>) => {
+      if (checked) {
+        onChange(enumOptionsSelectValue(index, checkboxesValues, enumOptions));
+      } else {
+        onChange(enumOptionsDeselectValue(index, checkboxesValues, enumOptions));
+      }
+    };
+
+  const _onBlur = ({ target }: FocusEvent<HTMLButtonElement>) =>
+    onBlur(id, enumOptionsValueForIndex<S>(target && target.value, enumOptions, emptyValue));
+  const _onFocus = ({ target }: FocusEvent<HTMLButtonElement>) =>
+    onFocus(id, enumOptionsValueForIndex<S>(target && target.value, enumOptions, emptyValue));
 
   return (
-    <FormControl error={showError} disabled={disabled || readonly} id={id}>
-      {label && <FormLabel>{label}</FormLabel>}
-      <FormGroup>
-        {enumOptions.map((option) => (
-          <FormControlLabel
-            key={String(option.value)}
-            control={
+    <>
+      {labelValue(
+        <FormLabel required={required} htmlFor={id}>
+          {label || undefined}
+        </FormLabel>,
+        hideLabel
+      )}
+      <FormGroup id={id} row={!!inline}>
+        {Array.isArray(enumOptions) &&
+          enumOptions.map((option, index: number) => {
+            const checked = enumOptionsIsSelected<S>(option.value, checkboxesValues);
+            const itemDisabled = Array.isArray(enumDisabled) && enumDisabled.indexOf(option.value) !== -1;
+            const checkbox = (
               <Checkbox
-                checked={selectedValues.includes(option.value)}
-                onChange={handleToggle(option.value)}
-                value={String(option.value)}
-                disabled={enumDisabled.includes(option.value)}
+                id={optionId(id, index)}
+                name={htmlName || id}
+                checked={checked}
+                disabled={disabled || itemDisabled || readonly}
+                autoFocus={autofocus && index === 0}
+                onChange={_onChange(index)}
+                onBlur={_onBlur}
+                onFocus={_onFocus}
+                aria-describedby={ariaDescribedByIds(id)}
               />
-            }
-            label={option.label}
-          />
-        ))}
+            );
+            return <FormControlLabel control={checkbox} key={index} label={option.label} />;
+          })}
       </FormGroup>
-      {showError && <FormHelperText>{rawErrors?.join(', ')}</FormHelperText>}
-    </FormControl>
+    </>
   );
 }
