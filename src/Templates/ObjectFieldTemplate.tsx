@@ -19,6 +19,7 @@ export default function ObjectFieldTemplate(props: ObjectFieldTemplateProps) {
   const DescriptionFieldTemplate = registry.templates.DescriptionFieldTemplate;
   const displayLabel = uiOptions.label !== false;
   const id = idSchema?.$id ?? (schema?.title ? schema.title : '');
+  const descriptionId = id ? `${id}__description` : '';
 
   return (
     <Paper elevation={0} style={{ padding: 8 }}>
@@ -38,7 +39,7 @@ export default function ObjectFieldTemplate(props: ObjectFieldTemplateProps) {
         {description && (
           <Grid item xs={12}>
             <DescriptionFieldTemplate
-              id={id ? `${id}__description` : undefined}
+              id={descriptionId}
               description={description}
               schema={schema}
               uiSchema={uiSchema}
