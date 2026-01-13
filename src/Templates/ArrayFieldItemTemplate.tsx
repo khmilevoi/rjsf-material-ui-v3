@@ -1,66 +1,52 @@
-import React from 'react';
+import { CSSProperties } from 'react';
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import { ArrayFieldTemplateItemType } from '@rjsf/utils';
+import Paper from '@material-ui/core/Paper';
+import {
+  ArrayFieldItemTemplateProps,
+  FormContextType,
+  getTemplate,
+  getUiOptions,
+  RJSFSchema,
+  StrictRJSFSchema,
+} from '@rjsf/utils';
 
-export default function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType) {
-  const {
-    children,
-    className,
-    disabled,
-    hasToolbar,
-    hasMoveDown,
-    hasMoveUp,
-    hasRemove,
-    hasCopy,
-    index,
-    onCopyIndexClick,
-    onDropIndexClick,
-    onReorderClick,
-    readonly,
+/** The `ArrayFieldItemTemplate` component is the template used to render an items of an array.
+ *
+ * @param props - The `ArrayFieldItemTemplateProps` props for the component
+ */
+export default function ArrayFieldItemTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: ArrayFieldItemTemplateProps<T, S, F>) {
+  const { children, buttonsProps, hasDescription, hasToolbar, uiSchema, registry } = props;
+  const uiOptions = getUiOptions<T, S, F>(uiSchema);
+  const ArrayFieldItemButtonsTemplate = getTemplate<'ArrayFieldItemButtonsTemplate', T, S, F>(
+    'ArrayFieldItemButtonsTemplate',
     registry,
-    uiSchema,
-  } = props;
-  const ButtonTemplates = registry.templates.ButtonTemplates;
-
+    uiOptions,
+  );
+  const btnStyle: CSSProperties = {
+    flex: 1,
+    paddingLeft: 6,
+    paddingRight: 6,
+    fontWeight: 'bold',
+    minWidth: 0,
+  };
+  const toolbarMarginTop = hasDescription ? -40 : -12;
   return (
-    <Grid container spacing={8} alignItems="center" className={className}>
-      <Grid item xs>
-        {children}
+    <Grid container alignItems="center">
+      <Grid item xs={8} sm={9} md={10} lg={11} xl={11} style={{ overflow: 'auto' }}>
+        <Box mb={2}>
+          <Paper elevation={2}>
+            <Box p={2}>{children}</Box>
+          </Paper>
+        </Box>
       </Grid>
       {hasToolbar && (
-        <Grid item>
-          {hasMoveUp && (
-            <ButtonTemplates.MoveUpButton
-              disabled={disabled || readonly}
-              onClick={onReorderClick(index, index - 1)}
-              uiSchema={uiSchema}
-              registry={registry}
-            />
-          )}
-          {hasMoveDown && (
-            <ButtonTemplates.MoveDownButton
-              disabled={disabled || readonly}
-              onClick={onReorderClick(index, index + 1)}
-              uiSchema={uiSchema}
-              registry={registry}
-            />
-          )}
-          {hasCopy && (
-            <ButtonTemplates.CopyButton
-              disabled={disabled || readonly}
-              onClick={onCopyIndexClick(index)}
-              uiSchema={uiSchema}
-              registry={registry}
-            />
-          )}
-          {hasRemove && (
-            <ButtonTemplates.RemoveButton
-              disabled={disabled || readonly}
-              onClick={onDropIndexClick(index)}
-              uiSchema={uiSchema}
-              registry={registry}
-            />
-          )}
+        <Grid item style={{ marginTop: toolbarMarginTop }}>
+          <ArrayFieldItemButtonsTemplate {...buttonsProps} style={btnStyle} />
         </Grid>
       )}
     </Grid>
