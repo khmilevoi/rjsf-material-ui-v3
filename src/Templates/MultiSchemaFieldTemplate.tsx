@@ -1,20 +1,20 @@
-import React from 'react';
+import Box from '@material-ui/core/Box';
 import FormControl from '@material-ui/core/FormControl';
+import { FormContextType, MultiSchemaFieldTemplateProps, RJSFSchema, StrictRJSFSchema } from '@rjsf/utils';
 
-type MultiSchemaFieldTemplateProps = {
-  optionSchemaField: React.ReactNode;
-  selector: React.ReactNode;
-};
-
-export default function MultiSchemaFieldTemplate(props: MultiSchemaFieldTemplateProps) {
+export default function MultiSchemaFieldTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: MultiSchemaFieldTemplateProps<T, S, F>) {
   const { optionSchemaField, selector } = props;
 
   return (
-    <div style={{ marginBottom: 16 }}>
+    <Box mb={2}>
       <FormControl fullWidth style={{ marginBottom: 16 }}>
         {selector}
       </FormControl>
       {optionSchemaField}
-    </div>
+    </Box>
   );
 }

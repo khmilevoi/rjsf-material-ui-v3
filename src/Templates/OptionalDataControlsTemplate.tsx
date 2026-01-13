@@ -1,49 +1,43 @@
-import React from 'react';
+import { FormContextType, OptionalDataControlsTemplateProps, RJSFSchema, StrictRJSFSchema } from '@rjsf/utils';
 import AddIcon from '@material-ui/icons/Add';
-import { Registry, RJSFSchema, UiSchema } from '@rjsf/utils';
-import MuiIconButton, { RemoveButton } from '../IconButton';
 
-type OptionalDataControlsTemplateProps = {
-  id: string;
-  label?: string;
-  onAddClick?: (event?: React.MouseEvent) => void;
-  onRemoveClick?: (event?: React.MouseEvent) => void;
-  registry: Registry;
-  uiSchema?: UiSchema<unknown, RJSFSchema>;
-  [key: string]: unknown;
-};
+import IconButton, { RemoveButton } from '../IconButton';
 
-export default function OptionalDataControlsTemplate(props: OptionalDataControlsTemplateProps) {
-  const { id, label, onAddClick, onRemoveClick, registry, uiSchema, ...buttonProps } = props;
-
+/** The OptionalDataControlsTemplate renders one of three different states. If
+ * there is an `onAddClick()` function, it renders the "Add" button. If there is
+ * an `onRemoveClick()` function, it renders the "Remove" button. Otherwise it
+ * renders the "No data found" section. All of them use the `label` as either
+ * the `title` of buttons or simply outputting it.
+ *
+ * @param props - The `OptionalDataControlsTemplateProps` for the template
+ */
+export default function OptionalDataControlsTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: OptionalDataControlsTemplateProps<T, S, F>) {
+  const { id, registry, label, onAddClick, onRemoveClick } = props;
   if (onAddClick) {
     return (
-      <MuiIconButton
+      <IconButton
         id={id}
+        registry={registry}
         className="rjsf-add-optional-data"
         onClick={onAddClick}
         title={label}
         icon={<AddIcon fontSize="small" />}
-        registry={registry}
-        uiSchema={uiSchema}
-        {...buttonProps}
       />
     );
-  }
-
-  if (onRemoveClick) {
+  } else if (onRemoveClick) {
     return (
       <RemoveButton
         id={id}
+        registry={registry}
         className="rjsf-remove-optional-data"
         onClick={onRemoveClick}
         title={label}
-        registry={registry}
-        uiSchema={uiSchema}
-        {...buttonProps}
       />
     );
   }
-
   return <em id={id}>{label}</em>;
 }

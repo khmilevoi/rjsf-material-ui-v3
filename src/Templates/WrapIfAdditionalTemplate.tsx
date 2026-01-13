@@ -1,50 +1,88 @@
-import React from 'react';
+import { CSSProperties } from 'react';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import { WrapIfAdditionalTemplateProps } from '@rjsf/utils';
+import {
+  ADDITIONAL_PROPERTY_FLAG,
+  buttonId,
+  FormContextType,
+  RJSFSchema,
+  StrictRJSFSchema,
+  TranslatableString,
+  WrapIfAdditionalTemplateProps,
+} from '@rjsf/utils';
 
-export default function WrapIfAdditionalTemplate(props: WrapIfAdditionalTemplateProps) {
+/** The `WrapIfAdditional` component is used by the `FieldTemplate` to rename, or remove properties that are
+ * part of an `additionalProperties` part of a schema.
+ *
+ * @param props - The `WrapIfAdditionalProps` for this component
+ */
+export default function WrapIfAdditionalTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: WrapIfAdditionalTemplateProps<T, S, F>) {
   const {
     children,
     classNames,
+    style,
+    disabled,
     id,
     label,
-    onDropPropertyClick,
-    onKeyChange,
-    required,
+    displayLabel,
+    onKeyRenameBlur,
+    onRemoveProperty,
     readonly,
-    disabled,
+    required,
     schema,
     uiSchema,
     registry,
   } = props;
+  const { templates, translateString } = registry;
+  // Button templates are not overridden in the uiSchema
+  const { RemoveButton } = templates.ButtonTemplates;
+  const keyLabel = translateString(TranslatableString.KeyLabel, [label]);
+  const additional = ADDITIONAL_PROPERTY_FLAG in schema;
+  const btnStyle: CSSProperties = {
+    flex: 1,
+    paddingLeft: 6,
+    paddingRight: 6,
+    fontWeight: 'bold',
+  };
 
-  if (!props.schema.additionalProperties) {
-    return <div className={classNames}>{children}</div>;
+  if (!additional) {
+    return (
+      <div className={classNames} style={style}>
+        {children}
+      </div>
+    );
   }
-  const ButtonTemplates = registry.templates.ButtonTemplates;
 
   return (
-    <Grid container spacing={8} alignItems="center" className={classNames}>
-      <Grid item xs={5}>
+    <Grid container key={`${id}-key`} alignItems="flex-start" spacing={2} className={classNames} style={style}>
+      <Grid item xs={12} sm={5}>
         <TextField
-          id={`${id}-key`}
-          label="Key"
-          required={required}
-          value={label}
-          onChange={(event) => onKeyChange(event.target.value)}
-          disabled={disabled || readonly}
           fullWidth
-          inputProps={{ 'aria-describedby': `${id}__error` }}
+          required={required}
+          label={displayLabel ? keyLabel : undefined}
+          defaultValue={label}
+          disabled={disabled || readonly}
+          id={`${id}-key`}
+          name={`${id}-key`}
+          onBlur={!readonly ? onKeyRenameBlur : undefined}
+          type="text"
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={12} sm={5}>
         {children}
       </Grid>
-      <Grid item xs={1}>
-        <ButtonTemplates.RemoveButton
-          onClick={onDropPropertyClick(label)}
+      <Grid item xs={12} sm={2} style={{ marginTop: 12 }}>
+        <RemoveButton
+          id={buttonId(id, 'remove')}
+          className="rjsf-object-property-remove"
+          iconType="default"
+          style={btnStyle}
           disabled={disabled || readonly}
+          onClick={onRemoveProperty}
           uiSchema={uiSchema}
           registry={registry}
         />

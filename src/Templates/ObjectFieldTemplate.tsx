@@ -1,58 +1,105 @@
-import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import { ObjectFieldTemplateProps, getUiOptions } from '@rjsf/utils';
+import {
+  FormContextType,
+  ObjectFieldTemplateProps,
+  RJSFSchema,
+  StrictRJSFSchema,
+  canExpand,
+  descriptionId,
+  getTemplate,
+  getUiOptions,
+  titleId,
+  buttonId,
+} from '@rjsf/utils';
 
-export default function ObjectFieldTemplate(props: ObjectFieldTemplateProps) {
+/** The `ObjectFieldTemplate` is the template to use to render all the inner properties of an object along with the
+ * title and description if available. If the object is expandable, then an `AddButton` is also rendered after all
+ * the properties.
+ *
+ * @param props - The `ObjectFieldTemplateProps` for this component
+ */
+export default function ObjectFieldTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: ObjectFieldTemplateProps<T, S, F>) {
   const {
-    title,
     description,
+    title,
     properties,
-    uiSchema,
-    registry,
-    idSchema,
     required,
+    disabled,
+    readonly,
+    uiSchema,
+    fieldPathId,
     schema,
+    formData,
+    optionalDataControl,
+    onAddProperty,
+    registry,
   } = props;
-  const uiOptions = getUiOptions(uiSchema);
-  const TitleFieldTemplate = registry.templates.TitleFieldTemplate;
-  const DescriptionFieldTemplate = registry.templates.DescriptionFieldTemplate;
-  const displayLabel = uiOptions.label !== false;
-  const id = idSchema?.$id ?? (schema?.title ? schema.title : '');
-  const descriptionId = id ? `${id}__description` : '';
-
+  const uiOptions = getUiOptions<T, S, F>(uiSchema);
+  const TitleFieldTemplate = getTemplate<'TitleFieldTemplate', T, S, F>('TitleFieldTemplate', registry, uiOptions);
+  const DescriptionFieldTemplate = getTemplate<'DescriptionFieldTemplate', T, S, F>(
+    'DescriptionFieldTemplate',
+    registry,
+    uiOptions,
+  );
+  const showOptionalDataControlInTitle = !readonly && !disabled;
+  // Button templates are not overridden in the uiSchema
+  const {
+    ButtonTemplates: { AddButton },
+  } = registry.templates;
   return (
-    <Paper elevation={0} style={{ padding: 8 }}>
-      <Grid container spacing={16}>
-        {displayLabel && title && (
-          <Grid item xs={12}>
-            <TitleFieldTemplate
-              id={id}
-              title={title}
-              required={required}
-              schema={schema}
-              uiSchema={uiSchema}
-              registry={registry}
-            />
-          </Grid>
+    <>
+      {title && (
+        <TitleFieldTemplate
+          id={titleId(fieldPathId)}
+          title={title}
+          required={required}
+          schema={schema}
+          uiSchema={uiSchema}
+          registry={registry}
+          optionalDataControl={showOptionalDataControlInTitle ? optionalDataControl : undefined}
+        />
+      )}
+      {description && (
+        <DescriptionFieldTemplate
+          id={descriptionId(fieldPathId)}
+          description={description}
+          schema={schema}
+          uiSchema={uiSchema}
+          registry={registry}
+        />
+      )}
+      <Grid container spacing={2} style={{ marginTop: '10px' }}>
+        {!showOptionalDataControlInTitle ? optionalDataControl : undefined}
+        {properties.map((element, index) =>
+          // Remove the <Grid> if the inner element is hidden as the <Grid>
+          // itself would otherwise still take up space.
+          element.hidden ? (
+            element.content
+          ) : (
+            <Grid item xs={12} key={index} style={{ marginBottom: '10px' }}>
+              {element.content}
+            </Grid>
+          ),
         )}
-        {description && (
-          <Grid item xs={12}>
-            <DescriptionFieldTemplate
-              id={descriptionId}
-              description={description}
-              schema={schema}
-              uiSchema={uiSchema}
-              registry={registry}
-            />
-          </Grid>
-        )}
-        {properties.map((element) => (
-          <Grid item xs={12} key={element.name}>
-            {element.content}
-          </Grid>
-        ))}
       </Grid>
-    </Paper>
+      {canExpand<T, S, F>(schema, uiSchema, formData) && (
+        <Grid container justify="flex-end">
+          <Grid item>
+            <AddButton
+              id={buttonId(fieldPathId, 'add')}
+              className="rjsf-object-property-expand"
+              onClick={onAddProperty}
+              disabled={disabled || readonly}
+              uiSchema={uiSchema}
+              registry={registry}
+            />
+          </Grid>
+        </Grid>
+      )}
+    </>
   );
 }
