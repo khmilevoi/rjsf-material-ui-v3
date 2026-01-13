@@ -1,43 +1,88 @@
-import React from 'react';
 import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormLabel from '@material-ui/core/FormLabel';
-import { FieldTemplateProps, getUiOptions } from '@rjsf/utils';
+import Typography from '@material-ui/core/Typography';
+import {
+  FieldTemplateProps,
+  FormContextType,
+  getTemplate,
+  getUiOptions,
+  RJSFSchema,
+  StrictRJSFSchema,
+} from '@rjsf/utils';
 
-export default function FieldTemplate(props: FieldTemplateProps) {
+/** The `FieldTemplate` component is the template used by `SchemaField` to render any field. It renders the field
+ * content, (label, description, children, errors and help) inside of a `WrapIfAdditional` component.
+ *
+ * @param props - The `FieldTemplateProps` for this component
+ */
+export default function FieldTemplate<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any,
+>(props: FieldTemplateProps<T, S, F>) {
   const {
     id,
-    classNames,
-    label,
-    help,
-    required,
-    description,
-    errors,
     children,
+    classNames,
+    style,
+    disabled,
     displayLabel,
-    rawErrors,
+    hidden,
+    label,
+    onKeyRename,
+    onKeyRenameBlur,
+    onRemoveProperty,
+    readonly,
+    required,
+    rawErrors = [],
+    errors,
+    help,
+    description,
+    rawDescription,
+    schema,
     uiSchema,
+    registry,
   } = props;
+  const uiOptions = getUiOptions<T, S, F>(uiSchema);
+  const WrapIfAdditionalTemplate = getTemplate<'WrapIfAdditionalTemplate', T, S, F>(
+    'WrapIfAdditionalTemplate',
+    registry,
+    uiOptions,
+  );
 
-  const showError = rawErrors && rawErrors.length > 0;
-  const uiOptions = getUiOptions(uiSchema);
-  const hideError = uiOptions.hideError === true;
-  const showLabel = displayLabel && label && uiOptions.label !== false;
+  if (hidden) {
+    return <div style={{ display: 'none' }}>{children}</div>;
+  }
+
+  const isCheckbox = uiOptions.widget === 'checkbox';
 
   return (
-    <FormControl fullWidth className={classNames} error={showError && !hideError} id={id}>
-      {showLabel && (
-        <FormLabel htmlFor={id} required={required}>
-          {label}
-        </FormLabel>
-      )}
-      {description}
-      {children}
-      {!hideError && errors}
-      {help}
-      {!hideError && !errors && showError && (
-        <FormHelperText>{rawErrors?.join(', ')}</FormHelperText>
-      )}
-    </FormControl>
+    <WrapIfAdditionalTemplate
+      classNames={classNames}
+      style={style}
+      disabled={disabled}
+      id={id}
+      label={label}
+      displayLabel={displayLabel}
+      rawDescription={rawDescription}
+      onKeyRename={onKeyRename}
+      onKeyRenameBlur={onKeyRenameBlur}
+      onRemoveProperty={onRemoveProperty}
+      readonly={readonly}
+      required={required}
+      schema={schema}
+      uiSchema={uiSchema}
+      registry={registry}
+    >
+      <FormControl fullWidth error={rawErrors.length ? true : false} required={required}>
+        {children}
+        {displayLabel && !isCheckbox && rawDescription ? (
+          <Typography variant="caption" color="textSecondary">
+            {description}
+          </Typography>
+        ) : null}
+        {errors}
+        {help}
+      </FormControl>
+    </WrapIfAdditionalTemplate>
   );
 }
