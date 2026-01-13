@@ -3,8 +3,8 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import {
   ArrayFieldTemplateProps,
-  ArrayFieldTemplateItemType,
   FormContextType,
+  buttonId,
   getTemplate,
   getUiOptions,
   RJSFSchema,
@@ -25,9 +25,10 @@ export default function ArrayFieldTemplate<
     canAdd,
     className,
     disabled,
-    idSchema,
+    fieldPathId,
     uiSchema,
     items,
+    optionalDataControl,
     onAddClick,
     readonly,
     registry,
@@ -41,47 +42,43 @@ export default function ArrayFieldTemplate<
     registry,
     uiOptions,
   );
-  const ArrayFieldItemTemplate = getTemplate<'ArrayFieldItemTemplate', T, S, F>(
-    'ArrayFieldItemTemplate',
-    registry,
-    uiOptions,
-  );
   const ArrayFieldTitleTemplate = getTemplate<'ArrayFieldTitleTemplate', T, S, F>(
     'ArrayFieldTitleTemplate',
     registry,
     uiOptions,
   );
+  const showOptionalDataControlInTitle = !readonly && !disabled;
   // Button templates are not overridden in the uiSchema
   const {
     ButtonTemplates: { AddButton },
   } = registry.templates;
   return (
-    <Paper elevation={2} className={className} id={idSchema.$id}>
+    <Paper elevation={2} className={className} id={fieldPathId.$id}>
       <Box p={2}>
         <ArrayFieldTitleTemplate
-          idSchema={idSchema}
+          fieldPathId={fieldPathId}
           title={uiOptions.title || title}
           schema={schema}
           uiSchema={uiSchema}
           required={required}
           registry={registry}
+          optionalDataControl={showOptionalDataControlInTitle ? optionalDataControl : undefined}
         />
         <ArrayFieldDescriptionTemplate
-          idSchema={idSchema}
+          fieldPathId={fieldPathId}
           description={uiOptions.description || schema.description}
           schema={schema}
           uiSchema={uiSchema}
           registry={registry}
         />
-        {items &&
-          items.map(({ key, ...itemProps }: ArrayFieldTemplateItemType<T, S, F>) => (
-            <ArrayFieldItemTemplate key={key} {...itemProps} />
-          ))}
+        {!showOptionalDataControlInTitle ? optionalDataControl : undefined}
+        {items}
         {canAdd && (
           <Grid container justify="flex-end">
             <Grid item>
               <Box mt={2}>
                 <AddButton
+                  id={buttonId(fieldPathId, 'add')}
                   className="rjsf-array-item-add"
                   onClick={onAddClick}
                   disabled={disabled || readonly}

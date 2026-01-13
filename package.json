@@ -16,16 +16,16 @@
   "peerDependencies": {
     "@material-ui/core": "^3.0.0",
     "@material-ui/icons": "^3.0.0",
-    "@rjsf/core": "^5.0.0",
-    "@rjsf/utils": "^5.0.0",
+    "@rjsf/core": "^6.1.2",
+    "@rjsf/utils": "^6.1.2",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
   "devDependencies": {
     "@material-ui/core": "^3.0.0",
     "@material-ui/icons": "^3.0.0",
-    "@rjsf/core": "^5.0.0",
-    "@rjsf/utils": "^5.0.0",
+    "@rjsf/core": "^6.1.2",
+    "@rjsf/utils": "^6.1.2",
     "@types/react": "^16.8.0",
     "@types/react-dom": "^16.8.0",
     "react": "^16.8.0",

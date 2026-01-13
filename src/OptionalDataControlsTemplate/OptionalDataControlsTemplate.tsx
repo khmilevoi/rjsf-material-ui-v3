@@ -1,20 +1,8 @@
 import React from 'react';
-import { FormContextType, RJSFSchema, Registry, StrictRJSFSchema } from '@rjsf/utils';
+import { FormContextType, OptionalDataControlsTemplateProps, RJSFSchema, StrictRJSFSchema } from '@rjsf/utils';
 import AddIcon from '@material-ui/icons/Add';
 
 import IconButton, { RemoveButton } from '../IconButton';
-
-type OptionalDataControlsTemplateProps<
-  T = any,
-  S extends StrictRJSFSchema = RJSFSchema,
-  F extends FormContextType = any,
-> = {
-  id: string;
-  label: string;
-  registry: Registry<T, S, F>;
-  onAddClick?: (event?: any) => void;
-  onRemoveClick?: (event?: any) => void;
-};
 
 /** The OptionalDataControlsTemplate renders one of three different states. If
  * there is an `onAddClick()` function, it renders the "Add" button. If there is

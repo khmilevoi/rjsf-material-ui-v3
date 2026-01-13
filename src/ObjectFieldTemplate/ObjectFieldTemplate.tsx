@@ -2,10 +2,10 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import {
   FormContextType,
-  ObjectFieldTemplatePropertyType,
   ObjectFieldTemplateProps,
   RJSFSchema,
   StrictRJSFSchema,
+  buttonId,
   canExpand,
   descriptionId,
   getTemplate,
@@ -25,11 +25,13 @@ export default function ObjectFieldTemplate<
   F extends FormContextType = any,
 >(props: ObjectFieldTemplateProps<T, S, F>) {
   const {
+    className,
     description,
     disabled,
     formData,
-    idSchema,
-    onAddClick,
+    fieldPathId,
+    onAddProperty,
+    optionalDataControl,
     properties,
     readonly,
     registry,
@@ -45,31 +47,34 @@ export default function ObjectFieldTemplate<
     registry,
     uiOptions,
   );
+  const showOptionalDataControlInTitle = !readonly && !disabled;
   // Button templates are not overridden in the uiSchema
   const {
     ButtonTemplates: { AddButton },
   } = registry.templates;
   return (
-    <>
+    <div className={className}>
       {title && (
         <TitleFieldTemplate
-          id={titleId<T>(idSchema)}
+          id={titleId(fieldPathId)}
           title={title}
           required={required}
           schema={schema}
           uiSchema={uiSchema}
           registry={registry}
+          optionalDataControl={showOptionalDataControlInTitle ? optionalDataControl : undefined}
         />
       )}
       {description && (
         <DescriptionFieldTemplate
-          id={descriptionId<T>(idSchema)}
+          id={descriptionId(fieldPathId)}
           description={description}
           schema={schema}
           uiSchema={uiSchema}
           registry={registry}
         />
       )}
+      {!showOptionalDataControlInTitle ? optionalDataControl : undefined}
       <Grid container spacing={16} style={{ marginTop: '10px' }}>
         {properties.map((element, index) =>
           // Remove the <Grid> if the inner element is hidden as the <Grid>
@@ -77,12 +82,7 @@ export default function ObjectFieldTemplate<
           element.hidden ? (
             element.content
           ) : (
-            <Grid
-              item
-              xs={12}
-              key={(element as ObjectFieldTemplatePropertyType).name || index}
-              style={{ marginBottom: '10px' }}
-            >
+            <Grid item xs={12} key={element.name || index} style={{ marginBottom: '10px' }}>
               {element.content}
             </Grid>
           ),
@@ -93,7 +93,8 @@ export default function ObjectFieldTemplate<
           <Grid item>
             <AddButton
               className="rjsf-object-property-expand"
-              onClick={onAddClick(schema)}
+              id={buttonId(fieldPathId, 'add')}
+              onClick={onAddProperty}
               disabled={disabled || readonly}
               uiSchema={uiSchema}
               registry={registry}
@@ -101,6 +102,6 @@ export default function ObjectFieldTemplate<
           </Grid>
         </Grid>
       )}
-    </>
+    </div>
   );
 }

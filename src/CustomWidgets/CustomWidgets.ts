@@ -26,7 +26,7 @@ export function generateCustomWidgets<
     TextWidget,
     UpDownWidget,
     URLWidget,
-  } as RegistryWidgetsType<T, S, F>;
+  } as unknown as RegistryWidgetsType<T, S, F>;
 }
 
 export const CustomWidgets = generateCustomWidgets();

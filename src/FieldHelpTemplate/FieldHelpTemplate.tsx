@@ -1,5 +1,6 @@
 import React from 'react';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import { RichHelp } from '@rjsf/core';
 import { FieldHelpProps, FormContextType, helpId, RJSFSchema, StrictRJSFSchema } from '@rjsf/utils';
 
 /** The `FieldHelpTemplate` component renders any help desired for a field
@@ -11,14 +12,14 @@ export default function FieldHelpTemplate<
   S extends StrictRJSFSchema = RJSFSchema,
   F extends FormContextType = any,
 >(props: FieldHelpProps<T, S, F>) {
-  const { idSchema, help } = props;
+  const { fieldPathId, help, uiSchema, registry } = props;
   if (!help) {
     return null;
   }
 
   return (
-    <FormHelperText component="div" id={helpId<T>(idSchema)} style={{ marginTop: '5px' }}>
-      {help}
+    <FormHelperText component="div" id={helpId(fieldPathId)} style={{ marginTop: '5px' }}>
+      <RichHelp help={help} registry={registry} uiSchema={uiSchema} />
     </FormHelperText>
   );
 }

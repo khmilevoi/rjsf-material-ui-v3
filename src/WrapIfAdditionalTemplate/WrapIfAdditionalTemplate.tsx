@@ -3,6 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import {
   ADDITIONAL_PROPERTY_FLAG,
+  buttonId,
   FormContextType,
   RJSFSchema,
   StrictRJSFSchema,
@@ -27,8 +28,9 @@ export default function WrapIfAdditionalTemplate<
     disabled,
     id,
     label,
-    onKeyChange,
-    onDropPropertyClick,
+    displayLabel,
+    onKeyRenameBlur,
+    onRemoveProperty,
     readonly,
     required,
     schema,
@@ -61,12 +63,12 @@ export default function WrapIfAdditionalTemplate<
         <TextField
           fullWidth
           required={required}
-          label={keyLabel}
+          label={displayLabel ? keyLabel : undefined}
           defaultValue={label}
           disabled={disabled || readonly}
           id={`${id}-key`}
           name={`${id}-key`}
-          onBlur={!readonly ? ({ target }) => onKeyChange(target && target.value) : undefined}
+          onBlur={!readonly ? onKeyRenameBlur : undefined}
           type="text"
         />
       </Grid>
@@ -79,7 +81,8 @@ export default function WrapIfAdditionalTemplate<
           iconType="default"
           style={btnStyle}
           disabled={disabled || readonly}
-          onClick={onDropPropertyClick(label)}
+          id={buttonId(id, 'remove')}
+          onClick={onRemoveProperty}
           uiSchema={uiSchema}
           registry={registry}
         />
